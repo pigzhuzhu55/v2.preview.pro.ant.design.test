@@ -4,6 +4,7 @@ import { fakeAccountLogin, getFakeCaptcha } from '@/services/api';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
+import md5 from 'js-md5'
 
 export default {
   namespace: 'login',
@@ -14,13 +15,14 @@ export default {
 
   effects: {
     *login({ payload }, { call, put }) {
+      payload.password = md5(payload.password);
       const response = yield call(fakeAccountLogin, payload);
       yield put({
         type: 'changeLoginStatus',
         payload: response,
       });
       // Login successfully
-      if (response.status === 'ok') {
+      if (response.code === 0) {
         reloadAuthorized();
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -48,8 +50,12 @@ export default {
       yield put({
         type: 'changeLoginStatus',
         payload: {
-          status: false,
-          currentAuthority: 'guest',
+          code:0,
+          data:{
+            status: false,
+            usertype:'',
+            permissions: [],
+          }
         },
       });
       reloadAuthorized();
@@ -70,12 +76,19 @@ export default {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority);
-      return {
-        ...state,
-        status: payload.status,
-        type: payload.type,
-      };
+        if(!payload.data){
+          payload.data={
+            type:'account',
+            permissions:[]
+          }
+        }
+        setAuthority(payload.data);
+        const ret = {
+          ...state,
+          status: payload.code===0,
+          type: payload.data.type,
+        };
+        return ret;
     },
   },
 };

@@ -14,31 +14,17 @@ import { CURRENT } from './renderAuthorize';
 const checkPermissions = (authority, currentAuthority, target, Exception) => {
   // 没有判定权限.默认查看所有
   // Retirement authority, return target;
-  if (!authority) {
+  if (!authority||authority==='guest') {
     return target;
   }
-  // 数组处理
-  if (Array.isArray(authority)) {
-    if (Array.isArray(currentAuthority)) {
-      if (currentAuthority.some(item => authority.includes(item))) {
-        return target;
-      }
-    } else if (authority.includes(currentAuthority)) {
-      return target;
-    }
-    return Exception;
+
+  if(currentAuthority.proUserType==='admin')
+  {
+    return target;
   }
-  // string 处理
-  if (typeof authority === 'string') {
-    if (Array.isArray(currentAuthority)) {
-      if (currentAuthority.some(item => authority === item)) {
-        return target;
-      }
-    } else if (authority === currentAuthority) {
-      return target;
-    }
-    return Exception;
-  }
+
+  const path = target.path;
+
   // Promise 处理
   if (authority instanceof Promise) {
     return <PromiseRender ok={target} error={Exception} promise={authority} />;
@@ -59,7 +45,17 @@ const checkPermissions = (authority, currentAuthority, target, Exception) => {
       throw error;
     }
   }
-  throw new Error('unsupported parameters');
+
+  
+    if (Array.isArray(currentAuthority.permission)) {
+      if (currentAuthority.some(item => path === item)) {
+        return target;
+      }
+    } else if (path === currentAuthority) {
+      return target;
+    }
+    return Exception;
+
 };
 
 export { checkPermissions };

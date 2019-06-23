@@ -10,10 +10,9 @@ const renderAuthorize = Authorized => currentAuthority => {
       CURRENT = currentAuthority();
     }
     if (
-      Object.prototype.toString.call(currentAuthority) === '[object String]' ||
-      Array.isArray(currentAuthority)
+      Object.prototype.toString.call(currentAuthority) === '[object Object]'
     ) {
-      CURRENT = currentAuthority;
+      CURRENT = currentAuthority.permission;
     }
   } else {
     CURRENT = 'NULL';
