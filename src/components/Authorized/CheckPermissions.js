@@ -14,16 +14,15 @@ import { CURRENT } from './renderAuthorize';
 const checkPermissions = (authority, currentAuthority, target, Exception) => {
   // 没有判定权限.默认查看所有
   // Retirement authority, return target;
-  if (!authority||authority==='guest') {
+  if (!authority || authority === 'guest') {
     return target;
   }
 
-  if(currentAuthority.proUserType==='admin')
-  {
+  if (currentAuthority.proUserType.some(item => item === 'admin')) {
     return target;
   }
 
-  const path = target.path;
+  const { path } = target;
 
   // Promise 处理
   if (authority instanceof Promise) {
@@ -46,16 +45,14 @@ const checkPermissions = (authority, currentAuthority, target, Exception) => {
     }
   }
 
-  
-    if (Array.isArray(currentAuthority.permission)) {
-      if (currentAuthority.some(item => path === item)) {
-        return target;
-      }
-    } else if (path === currentAuthority) {
+  if (Array.isArray(currentAuthority.proPermission)) {
+    if (currentAuthority.proPermission.some(item => path === item)) {
       return target;
     }
-    return Exception;
-
+  } else if (path === currentAuthority.proPermission) {
+    return target;
+  }
+  return Exception;
 };
 
 export { checkPermissions };

@@ -6,7 +6,7 @@ import { Checkbox, Alert, Modal, Icon } from 'antd';
 import Login from '@/components/Login';
 import styles from './Login.less';
 
-//加载路由的时候,会动态加载当前文件下的model文件,也就是对应文件下的src/models/login.js
+// 加载路由的时候,会动态加载当前文件下的model文件,也就是对应文件下的src/models/login.js
 
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
 
@@ -14,16 +14,15 @@ const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
  * @connect 有两个参数,mapStateToProps以及mapDispatchToProps,
  * mapStateToProps将状态state绑定到组件的props
  * mapDispatchToProps将方法绑定到组件的props
- * 
- * ({login, loading})=>({}) 这是使用的第一个函数mapStateToProps（state, ownProps） 
- * 先看参数 login,loading, 
+ *
+ * ({login, loading})=>({}) 这是使用的第一个函数mapStateToProps（state, ownProps）
+ * 先看参数 login,loading,
  *    login:连接了名字为login的命名空间，和loading插件
- * 返回对象({login,submitting}) 
+ * 返回对象({login,submitting})
  *    login:为引用的namespace为login中的state对象,
  *    submitting:插件是否调用login控件中方法login,方法完成后submitting=false
  */
-@connect(({ login, loading }) => (
-  {
+@connect(({ login, loading }) => ({
   login,
   submitting: loading.effects['login/login'],
 }))

@@ -1,4 +1,5 @@
 import { query as queryUsers, queryCurrent } from '@/services/user';
+import { routerRedux } from 'dva/router';
 
 export default {
   namespace: 'user',
@@ -22,6 +23,10 @@ export default {
         type: 'saveCurrentUser',
         payload: response,
       });
+
+      if (response.code === 1) {
+        yield put(routerRedux.replace({ pathname: '/user/login' }));
+      }
     },
   },
 
@@ -29,13 +34,13 @@ export default {
     save(state, action) {
       return {
         ...state,
-        list: action.payload,
+        list: action.payload.data,
       };
     },
     saveCurrentUser(state, action) {
       return {
         ...state,
-        currentUser: action.payload || {},
+        currentUser: action.payload.data || {},
       };
     },
     changeNotifyCount(state, action) {
@@ -43,8 +48,8 @@ export default {
         ...state,
         currentUser: {
           ...state.currentUser,
-          notifyCount: action.payload.totalCount,
-          unreadCount: action.payload.unreadCount,
+          notifyCount: action.payload.data.totalCount,
+          unreadCount: action.payload.data.unreadCount,
         },
       };
     },

@@ -4,7 +4,7 @@ import { fakeAccountLogin, getFakeCaptcha } from '@/services/api';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
-import md5 from 'js-md5'
+import md5 from 'js-md5';
 
 export default {
   namespace: 'login',
@@ -15,8 +15,9 @@ export default {
 
   effects: {
     *login({ payload }, { call, put }) {
-      payload.password = md5(payload.password);
-      const response = yield call(fakeAccountLogin, payload);
+      const newPayload = payload;
+      newPayload.password = md5(payload.password);
+      const response = yield call(fakeAccountLogin, newPayload);
       yield put({
         type: 'changeLoginStatus',
         payload: response,
@@ -50,12 +51,12 @@ export default {
       yield put({
         type: 'changeLoginStatus',
         payload: {
-          code:0,
-          data:{
+          code: 0,
+          data: {
             status: false,
-            usertype:'',
+            usertype: '',
             permissions: [],
-          }
+          },
         },
       });
       reloadAuthorized();
@@ -76,19 +77,13 @@ export default {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-        if(!payload.data){
-          payload.data={
-            type:'account',
-            permissions:[]
-          }
-        }
-        setAuthority(payload.data);
-        const ret = {
-          ...state,
-          status: payload.code===0,
-          type: payload.data.type,
-        };
-        return ret;
+      setAuthority(payload.data);
+      const ret = {
+        ...state,
+        status: payload.code === 0,
+        type: payload.data === null ? 'guest' : payload.data.type,
+      };
+      return ret;
     },
   },
 };
