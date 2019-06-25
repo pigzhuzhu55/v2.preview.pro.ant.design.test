@@ -38,12 +38,14 @@ export default [
           {
             path: '/dashboard/monitor',
             name: 'monitor',
-            component: './Dashboard/Monitor', authority: ['admin',],
+            component: './Dashboard/Monitor',
+            authority: ['admin'],
           },
           {
             path: '/dashboard/workplace',
             name: 'workplace',
-            component: './Dashboard/Workplace', authority: ['admin',],
+            component: './Dashboard/Workplace',
+            authority: ['admin'],
           },
         ],
       },
@@ -79,16 +81,15 @@ export default [
       {
         path: '/system',
         icon: 'appstore',
-        name: '系统管理',
+        name: 'system',
         routes: [
           {
             path: '/system/deptlist',
-            name: '部门管理',
+            name: 'deptment',
             component: './System/DeptList',
           },
         ],
       },
     ],
   },
-
 ];

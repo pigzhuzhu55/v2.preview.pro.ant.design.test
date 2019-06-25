@@ -12,13 +12,15 @@ export function getAuthority() {
   return authority;
 }
 export function setAuthority(data) {
-  const proPermission =
-    typeof data.permissions === 'string' ? [data.permissions] : data.permissions;
-  const proUserType = typeof data.userType === 'string' ? [data.userType] : data.userType;
+  if (data !== undefined) {
+    const proPermission =
+      typeof data.permissions === 'string' ? [data.permissions] : data.permissions;
+    const proUserType = typeof data.userType === 'string' ? [data.userType] : data.userType;
 
-  const proAuthority = {
-    proPermission,
-    proUserType,
-  };
-  localStorage.setItem('antd-pro-authority', JSON.stringify(proAuthority));
+    const proAuthority = {
+      proPermission,
+      proUserType,
+    };
+    localStorage.setItem('antd-pro-authority', JSON.stringify(proAuthority));
+  }
 }

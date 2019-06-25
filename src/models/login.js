@@ -81,7 +81,7 @@ export default {
       const ret = {
         ...state,
         status: payload.code === 0,
-        type: payload.data === null ? 'guest' : payload.data.type,
+        type: payload.data === undefined ? 'account' : payload.data.type,
       };
       return ret;
     },
