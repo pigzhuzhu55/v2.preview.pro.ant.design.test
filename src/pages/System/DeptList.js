@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Layout } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import TreeMenu from '@/components/TreeMenu';
+import DeptTable from './DeptTable';
 import { connect } from 'dva';
 import { FormattedMessage } from 'umi-plugin-react/locale';
 
@@ -9,9 +10,9 @@ const { Sider, Content } = Layout;
 
 @connect(({ deptList, loading }) => ({
   deptList,
-  loading: loading.models.treeData,
+  loading: loading.models.deptList,
 }))
-class DeptTree extends React.Component {
+class DeptList extends React.Component {
   state = {
     deptTreeData: [{ title: '部门列表', key: '0', isLeaf: false }],
   };
@@ -22,7 +23,7 @@ class DeptTree extends React.Component {
     console.log('selected', selectedKeys, info);
   };
 
-  onLoadData = treeNode => {
+  onLoadTreeData = treeNode => {
     const { dispatch } = this.props;
     return new Promise(resolve => {
       if (treeNode.props.children) {
@@ -65,11 +66,20 @@ class DeptTree extends React.Component {
             >
               <TreeMenu
                 defaultExpandedKeys={['0']}
-                onLoadData={this.onLoadData}
+                onLoadData={this.onLoadTreeData}
                 treeData={this.state.deptTreeData}
               />
             </Sider>
-            <Content>Content</Content>
+            <Content 
+            style={{
+              background: '#fff',
+              padding: 0,
+              height: '100vh',
+            }}
+            >
+              <DeptTable 
+             />
+            </Content>
           </Layout>
         </Card>
       </PageHeaderWrapper>
@@ -77,4 +87,4 @@ class DeptTree extends React.Component {
   }
 }
 
-export default DeptTree;
+export default DeptList;

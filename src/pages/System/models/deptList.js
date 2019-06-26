@@ -5,7 +5,10 @@ export default {
 
   state: {
     treeData: [],
-    list: [],
+    listData:  {
+      list: [],
+      pagination: {},
+    },
   },
 
   effects: {
