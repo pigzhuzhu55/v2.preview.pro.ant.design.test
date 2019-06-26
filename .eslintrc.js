@@ -34,6 +34,9 @@ module.exports = {
     'jsx-a11y/anchor-is-valid': 0,
     'linebreak-style': 0,
     'no-console': 0,
+    'no-param-reassign': 0,
+    'react/no-unused-state': 0,
+    'react/destructuring-assignment': 0,
   },
   settings: {
     polyfills: ['fetch', 'promises', 'url', 'object-assign'],

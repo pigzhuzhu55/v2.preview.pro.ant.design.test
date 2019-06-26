@@ -124,3 +124,7 @@ export async function queryNotices(params = {}) {
 export async function getFakeCaptcha(mobile) {
   return request(`/api/captcha?mobile=${mobile}`);
 }
+
+export async function getDeptChildren(id) {
+  return request(`/server/api/v1/organization/treeNodes?id=${id}`);
+}

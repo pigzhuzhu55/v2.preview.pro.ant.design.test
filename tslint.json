@@ -6,6 +6,9 @@
     "object-literal-sort-keys": false,
     "jsx-no-lambda": false,
     "no-implicit-dependencies": false,
-    "no-console": false
+    "no-console": false,
+    "interface-name": false,
+    "variable-name": false,
+    "no-empty-interface": false
   }
 }
