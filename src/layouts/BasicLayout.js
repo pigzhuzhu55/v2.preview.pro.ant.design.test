@@ -6,7 +6,6 @@ import { ContainerQuery } from 'react-container-query';
 import classNames from 'classnames';
 import Media from 'react-media';
 import logo from '../assets/logo.svg';
-import Footer from './Footer';
 import Header from './Header';
 import Context from './MenuContext';
 import SiderMenu from '@/components/SiderMenu';
@@ -142,7 +141,6 @@ class BasicLayout extends React.Component {
           <Content className={styles.content} style={contentStyle}>
             {children}
           </Content>
-          <Footer />
         </Layout>
       </Layout>
     );

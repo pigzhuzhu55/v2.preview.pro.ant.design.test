@@ -85,9 +85,16 @@ class DeptList extends React.Component {
     const { deptTreeData, selectDeptId } = this.state;
     const { loading } = this.props;
 
+    const bodyHeight = document.body.clientHeight-173;
+
     return (
       <PageHeaderWrapper title={<FormattedMessage id="menu.system.deptment" />}>
-        <Card bordered={false}>
+        <Card bordered={false}
+           style={{
+              height: bodyHeight,
+              overflowY: "auto",
+            }}
+        >
           <Layout>
             <Sider
               width={200}
@@ -110,7 +117,6 @@ class DeptList extends React.Component {
               style={{
                 background: '#fff',
                 padding: 0,
-                height: '100vh',
               }}
             >
               <DeptTable deptId={selectDeptId} />

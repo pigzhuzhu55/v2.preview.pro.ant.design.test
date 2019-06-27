@@ -34,6 +34,7 @@ ol {
   list-style: none;
 }
 
+
 @media (max-width: @screen-xs) {
   .ant-table {
     width: 100%;
@@ -49,4 +50,19 @@ ol {
       }
     }
   }
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background-color: rgba(29, 34, 40, 0.2);
+}
+*::-webkit-scrollbar-track {
+  background: inherit;
+}
+*::-webkit-scrollbar-thumb:hover,
+*::-webkit-scrollbar-scrollbarbutton:hover {
+  background-color: rgba(29, 34, 40, 0.4);
 }

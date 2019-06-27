@@ -86,22 +86,22 @@ export default [
           {
             path: '/system/deptlist',
             name: 'deptment',
-            component: './System/DeptList',
+            component: './System/Deptment/DeptList',
           },
           {
             path: '/system/modulelist',
             name: 'module',
-            component: './System/ModuleList',
+            component: './System/Module/ModuleList',
           },
           {
             path: '/system/rolelist',
             name: 'role',
-            component: './System/RoleList',
+            component: './System/Role/RoleList',
           },
           {
             path: '/system/userlist',
             name: 'user',
-            component: './System/UserList',
+            component: './System/User/UserList',
           },
         ],
       },
