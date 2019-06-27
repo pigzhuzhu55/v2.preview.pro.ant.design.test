@@ -88,6 +88,21 @@ export default [
             name: 'deptment',
             component: './System/DeptList',
           },
+          {
+            path: '/system/modulelist',
+            name: 'module',
+            component: './System/ModuleList',
+          },
+          {
+            path: '/system/rolelist',
+            name: 'role',
+            component: './System/RoleList',
+          },
+          {
+            path: '/system/userlist',
+            name: 'user',
+            component: './System/UserList',
+          },
         ],
       },
     ],

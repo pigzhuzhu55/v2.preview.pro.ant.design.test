@@ -44,5 +44,8 @@ export default {
   'menu.editor.koni': 'Koni Editor',
 
   'menu.system': 'System',
-  'menu.system.deptment': 'Deptment Manager',
+  'menu.system.deptment': 'Deptment',
+  'menu.system.module': 'Module',
+  'menu.system.role': 'Role',
+  'menu.system.user': 'User',
 };

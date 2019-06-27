@@ -45,4 +45,7 @@ export default {
 
   'menu.system': '系統管理',
   'menu.system.deptment': '部門管理',
+  'menu.system.module': '模塊管理',
+  'menu.system.role': '角色管理',
+  'menu.system.user': '用戶管理',
 };

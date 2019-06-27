@@ -10,7 +10,7 @@ const FormItem = Form.Item;
 /* eslint react/no-multi-comp:0 */
 @connect(({ deptList, loading }) => ({
   deptList,
-  loading: loading.models.deptList,
+  loading: loading.effects['deptList/listLoad'],
 }))
 @Form.create()
 class DeptTable extends PureComponent {
@@ -187,7 +187,6 @@ class DeptTable extends PureComponent {
             </Button>
             {selectedRows.length > 0 && (
               <span>
-                <Button>批量操作</Button>
                 <Dropdown overlay={menu}>
                   <Button>
                     更多操作 <Icon type="down" />

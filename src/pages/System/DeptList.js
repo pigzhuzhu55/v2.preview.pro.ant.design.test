@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Layout } from 'antd';
+import { Spin, Card, Layout } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import TreeMenu from '@/components/TreeMenu';
 import { connect } from 'dva';
@@ -10,7 +10,7 @@ const { Sider, Content } = Layout;
 
 @connect(({ deptList, loading }) => ({
   deptList,
-  loading: loading.models.deptList,
+  loading: loading.effects['deptList/treeLoad'],
 }))
 class DeptList extends React.Component {
   state = {
@@ -83,6 +83,7 @@ class DeptList extends React.Component {
 
   render() {
     const { deptTreeData, selectDeptId } = this.state;
+    const { loading } = this.props;
 
     return (
       <PageHeaderWrapper title={<FormattedMessage id="menu.system.deptment" />}>
@@ -96,12 +97,14 @@ class DeptList extends React.Component {
                 height: '100vh',
               }}
             >
-              <TreeMenu
-                defaultExpandedKeys={['0']}
-                onLoadData={this.onLoadTreeData}
-                onSelect={this.onSelect}
-                treeData={deptTreeData}
-              />
+              <Spin spinning={loading}>
+                <TreeMenu
+                  defaultExpandedKeys={['0']}
+                  onLoadData={this.onLoadTreeData}
+                  onSelect={this.onSelect}
+                  treeData={deptTreeData}
+                />
+              </Spin>
             </Sider>
             <Content
               style={{
