@@ -128,3 +128,12 @@ export async function getFakeCaptcha(mobile) {
 export async function getDeptChildren(id) {
   return request(`/server/api/v1/organization/treeNodes?id=${id}`);
 }
+export async function getDeptList(params) {
+  return request(`/server/api/v1/organization/list?${stringify(params)}`);
+}
+export async function removeDept(params) {
+  return request('/server/api/v1/organization/remove', {
+    method: 'POST',
+    data: params,
+  });
+}

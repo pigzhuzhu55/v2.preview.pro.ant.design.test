@@ -43,5 +43,5 @@ export default {
   'menu.editor.koni': '拓扑编辑器',
 
   'menu.system': '系统管理',
-  'menu.system.deptment': '部门管理',
+  'menu.system.deptment': '机构管理',
 };

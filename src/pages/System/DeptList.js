@@ -2,9 +2,9 @@ import React from 'react';
 import { Card, Layout } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import TreeMenu from '@/components/TreeMenu';
-import DeptTable from './DeptTable';
 import { connect } from 'dva';
 import { FormattedMessage } from 'umi-plugin-react/locale';
+import DeptTable from './DeptTable';
 
 const { Sider, Content } = Layout;
 
@@ -14,13 +14,43 @@ const { Sider, Content } = Layout;
 }))
 class DeptList extends React.Component {
   state = {
-    deptTreeData: [{ title: '部门列表', key: '0', isLeaf: false }],
+    deptTreeData: [{ title: '机构列表', key: '0', isLeaf: false }],
+    selectDeptId: 0,
   };
 
-  componentDidMount() {}
+  componentDidMount() {
+    const { dispatch } = this.props;
+    return new Promise(resolve => {
+      const params = {
+        id: 0,
+      };
 
-  onSelect = (selectedKeys, info) => {
-    console.log('selected', selectedKeys, info);
+      dispatch({
+        type: 'deptList/listLoad',
+        payload: params,
+      });
+
+      resolve();
+    });
+  }
+
+  onSelect = selectedKeys => {
+    const { dispatch } = this.props;
+    return new Promise(resolve => {
+      const params = {
+        // 点击的节点Id
+        id: selectedKeys[0],
+      };
+
+      dispatch({
+        type: 'deptList/listLoad',
+        payload: params,
+      });
+
+      this.setState({ selectDeptId: params.id });
+
+      resolve();
+    });
   };
 
   onLoadTreeData = treeNode => {
@@ -44,14 +74,16 @@ class DeptList extends React.Component {
             deptList: { treeData },
           } = this.props;
           treeNode.props.dataRef.children = treeData;
-          this.setState({ treeData });
         },
       });
+
       resolve();
     });
   };
 
   render() {
+    const { deptTreeData, selectDeptId } = this.state;
+
     return (
       <PageHeaderWrapper title={<FormattedMessage id="menu.system.deptment" />}>
         <Card bordered={false}>
@@ -67,18 +99,18 @@ class DeptList extends React.Component {
               <TreeMenu
                 defaultExpandedKeys={['0']}
                 onLoadData={this.onLoadTreeData}
-                treeData={this.state.deptTreeData}
+                onSelect={this.onSelect}
+                treeData={deptTreeData}
               />
             </Sider>
-            <Content 
-            style={{
-              background: '#fff',
-              padding: 0,
-              height: '100vh',
-            }}
+            <Content
+              style={{
+                background: '#fff',
+                padding: 0,
+                height: '100vh',
+              }}
             >
-              <DeptTable 
-             />
+              <DeptTable deptId={selectDeptId} />
             </Content>
           </Layout>
         </Card>

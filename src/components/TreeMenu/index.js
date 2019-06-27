@@ -18,12 +18,13 @@ export default class TreeMenu extends PureComponent {
   };
 
   render() {
-    const { onLoadData, treeData, defaultExpandedKeys } = this.props;
+    const { onLoadData, treeData, defaultExpandedKeys, onSelect } = this.props;
 
     return (
       <Tree
         showLine
         loadData={onLoadData}
+        onSelect={onSelect}
         defaultExpandedKeys={defaultExpandedKeys}
         defaultSelectedKeys={defaultExpandedKeys}
       >
