@@ -43,10 +43,17 @@ const errorHandler = error => {
     });
     return;
   }
-  notification.error({
-    message: `请求错误 ${status}: ${url}`,
-    description: errortext,
-  });
+  if (status === 400) {
+    notification.error({
+      message: '您的账号在别处登陆，请重新登录。',
+    });
+    // @HACK
+    /* eslint-disable no-underscore-dangle */
+    window.g_app._store.dispatch({
+      type: 'login/logout',
+    });
+    return;
+  }
   // environment should not be used
   if (status === 403) {
     router.push('/exception/403');
@@ -58,7 +65,13 @@ const errorHandler = error => {
   }
   if (status >= 404 && status < 422) {
     router.push('/exception/404');
+    return;
   }
+  
+  notification.error({
+    message: `请求错误 ${status}: ${url}`,
+    description: errortext,
+  });
 };
 
 /**

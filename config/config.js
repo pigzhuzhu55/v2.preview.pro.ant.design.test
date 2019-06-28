@@ -79,10 +79,10 @@ export default {
     'primary-color': primaryColor,
   },
   // proxy: {
-  //   '/server': {
+  //   '/api': {
   //     target: 'http://localhost:8080/',
   //     changeOrigin: true,
-  //     pathRewrite: { '^/server': '' },
+  //     //pathRewrite: { '^/api': '/api' },
   //   },
   // },
   ignoreMomentLocale: true,
