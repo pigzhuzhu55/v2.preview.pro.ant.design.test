@@ -104,14 +104,14 @@ export async function updateFakeList(params) {
 }
 
 export async function fakeAccountLogin(params) {
-  return request('/server/api/none/sign/in', {
+  return request('/api/none/sign/in', {
     method: 'POST',
     data: params,
   });
 }
 
 export async function fakeRegister(params) {
-  return request('/server/api/register', {
+  return request('/api/register', {
     method: 'POST',
     data: params,
   });
@@ -125,14 +125,55 @@ export async function getFakeCaptcha(mobile) {
   return request(`/api/captcha?mobile=${mobile}`);
 }
 
+/**
+ * 组织管理
+ */
 export async function getDeptChildren(id) {
-  return request(`/server/api/v1/organization/treeNodes?id=${id}`);
+  return request(`/api/v1/organization/treeNodes?id=${id}`);
 }
 export async function getDeptList(params) {
-  return request(`/server/api/v1/organization/list?${stringify(params)}`);
+  return request(`/api/v1/organization/list?${stringify(params)}`);
 }
 export async function removeDept(params) {
-  return request('/server/api/v1/organization/remove', {
+  return request('/api/v1/organization/remove', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/**
+ * 权限模块管理
+ */
+export async function getModuleChildren(id) {
+  return request(`/api/v1/module/treeNodes?id=${id}`);
+}
+export async function getModuleList(params) {
+  return request(`/api/v1/module/list?${stringify(params)}`);
+}
+export async function removeModule(params) {
+  return request('/api/v1/module/remove', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/**
+ * 角色模块管理
+ */
+export async function getRoleList(params) {
+  return request(`/api/v1/role/list?${stringify(params)}`);
+}
+
+/**
+ * 用户模块
+ */
+
+export async function getUserList(params) {
+  return request(`/api/v1/user/list?${stringify(params)}`);
+}
+
+export async function removeUser(params) {
+  return request('/api/v1/user/remove', {
     method: 'POST',
     data: params,
   });

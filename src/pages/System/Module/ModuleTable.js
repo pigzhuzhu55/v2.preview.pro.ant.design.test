@@ -3,22 +3,24 @@ import { connect } from 'dva';
 import { Row, Col, Card, Form, Input, Menu, Icon, Button, Divider, Dropdown, Badge } from 'antd';
 import StandardTable from '@/components/StandardTable';
 
-import styles from './UserList.less';
+import styles from './ModuleList.less';
 
 const FormItem = Form.Item;
+const permTypeMap = ['default', 'processing', 'success'];
+const permType = ['模块', '菜单', '按钮'];
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ userList, loading }) => ({
-  userList,
-  loading: loading.effects['userList/listLoad'],
+@connect(({ moduleList, loading }) => ({
+  moduleList,
+  loading: loading.effects['moduleList/listLoad'],
 }))
 @Form.create()
-class UserList extends PureComponent {
+class ModuleTable extends PureComponent {
   state = {
-    userListData: [],
+    moduleListData: [],
     selectedRows: [],
-    expandForm: false,
     formValues: {},
+    selectModuleId: 0,
   };
 
   columns = [
@@ -27,24 +29,41 @@ class UserList extends PureComponent {
       dataIndex: 'key',
     },
     {
-      title: '用户名称',
-      dataIndex: 'name',
+      title: '名称',
+      dataIndex: 'permName',
     },
     {
-      title: '电话号码',
-      dataIndex: 'telephone',
+      title: '类型',
+      dataIndex: 'permType',
+      filters: [
+        {
+          text: permType[0],
+          value: 0,
+        },
+        {
+          text: permType[1],
+          value: 1,
+        },
+        {
+          text: permType[2],
+          value: 2,
+        },
+      ],
+      render(val) {
+        return <Badge status={permTypeMap[val]} text={permType[val]} />;
+      },
     },
     {
-      title: '帐号',
-      dataIndex: 'account',
+      title: '路径',
+      dataIndex: 'url',
     },
     {
-      title: '所属部门',
-      dataIndex: 'orgName',
+      title: '排序号',
+      dataIndex: 'sort',
     },
     {
-      title: '最后一次登录时间',
-      dataIndex: 'lastLoginTime',
+      title: '创建时间',
+      dataIndex: 'createTime',
     },
     {
       title: '操作',
@@ -57,13 +76,6 @@ class UserList extends PureComponent {
       ),
     },
   ];
-
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'userList/listLoad',
-    });
-  }
 
   handleSelectRows = rows => {
     this.setState({
@@ -89,7 +101,7 @@ class UserList extends PureComponent {
       });
 
       dispatch({
-        type: 'userList/listLoad',
+        type: 'moduleList/listLoad',
         payload: values,
       });
     });
@@ -114,15 +126,8 @@ class UserList extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'userList/listLoad',
+      type: 'moduleList/listLoad',
       payload: {},
-    });
-  };
-
-  toggleForm = () => {
-    const { expandForm } = this.state;
-    this.setState({
-      expandForm: !expandForm,
     });
   };
 
@@ -134,7 +139,7 @@ class UserList extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'userList/remove',
+          type: 'moduleList/remove',
           payload: {
             key: selectedRows.map(row => row.key),
           },
@@ -151,26 +156,18 @@ class UserList extends PureComponent {
   };
 
   renderForm() {
-    const { expandForm } = this.state;
-    return expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
-  }
-
-  renderSimpleForm() {
     const {
+      moduleId: id,
       form: { getFieldDecorator },
     } = this.props;
 
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
+        {getFieldDecorator('id', { initialValue: id })(<Input hidden />)}
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="用户名称">
-              {getFieldDecorator('userName')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="电话号码">
-              {getFieldDecorator('telephone')(<Input placeholder="请输入" />)}
+            <FormItem label="模块名称">
+              {getFieldDecorator('permName')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -181,9 +178,6 @@ class UserList extends PureComponent {
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                 重置
               </Button>
-              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                展开 <Icon type="down" />
-              </a>
             </span>
           </Col>
         </Row>
@@ -191,56 +185,9 @@ class UserList extends PureComponent {
     );
   }
 
-  renderAdvancedForm() {
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="用户名称">
-              {getFieldDecorator('userName')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="电话号码">
-              {getFieldDecorator('telephone')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="账户">
-              {getFieldDecorator('account')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="所属部门">
-              {getFieldDecorator('orgId')(<Input placeholder="TODO.." />)}
-            </FormItem>
-          </Col>
-        </Row>
-        <div style={{ overflow: 'hidden' }}>
-          <div style={{ marginBottom: 24 }}>
-            <Button type="primary" htmlType="submit">
-              查询
-            </Button>
-            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-              重置
-            </Button>
-            <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-              收起 <Icon type="up" />
-            </a>
-          </div>
-        </div>
-      </Form>
-    );
-  }
-
   render() {
     const {
-      userList: { listData },
+      moduleList: { listData },
       loading,
     } = this.props;
 
@@ -283,4 +230,4 @@ class UserList extends PureComponent {
   }
 }
 
-export default UserList;
+export default ModuleTable;

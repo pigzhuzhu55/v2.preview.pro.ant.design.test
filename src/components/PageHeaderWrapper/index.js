@@ -50,7 +50,7 @@ const PageHeaderWrapper = ({
   ...restProps
 }) => {
   return (
-    <div style={{ margin: '-12px -12px 0' }} className={classNames(wrapperClassName, styles.main)}>
+    <div className={classNames(wrapperClassName, styles.main)}>
       {top}
       <MenuContext.Consumer>
         {value => {

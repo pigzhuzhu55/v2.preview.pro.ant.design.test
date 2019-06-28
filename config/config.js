@@ -78,13 +78,13 @@ export default {
   theme: {
     'primary-color': primaryColor,
   },
-  proxy: {
-    '/server': {
-      target: 'http://localhost:8080/',
-      changeOrigin: true,
-      pathRewrite: { '^/server': '' },
-    },
-  },
+  // proxy: {
+  //   '/server': {
+  //     target: 'http://localhost:8080/',
+  //     changeOrigin: true,
+  //     pathRewrite: { '^/server': '' },
+  //   },
+  // },
   ignoreMomentLocale: true,
   lessLoaderOptions: {
     javascriptEnabled: true,
