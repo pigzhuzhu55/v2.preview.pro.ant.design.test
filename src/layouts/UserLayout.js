@@ -30,7 +30,7 @@ const links = [
 
 const copyright = (
   <Fragment>
-    Copyright <Icon type="copyright" /> 2019 蚂蚁金服体验技术部出品
+    Copyright <Icon type="copyright" /> 2019 老年项目技术部出品
   </Fragment>
 );
 
@@ -56,18 +56,10 @@ class UserLayout extends Component {
       <DocumentTitle title={getPageTitle(pathname, breadcrumbNameMap)}>
         <div className={styles.container}>
           <div className={styles.lang}>
-            <SelectLang />
+              <SelectLang />
           </div>
           <div className={styles.content}>
-            <div className={styles.top}>
-              <div className={styles.header}>
-                <Link to="/">
-                  <img alt="logo" className={styles.logo} src={logo} />
-                  <span className={styles.title}>Ant Design</span>
-                </Link>
-              </div>
-              <div className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</div>
-            </div>
+            
             {children}
           </div>
           <GlobalFooter links={links} copyright={copyright} />

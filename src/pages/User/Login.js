@@ -84,8 +84,16 @@ class LoginPage extends Component {
   render() {
     const { login, submitting } = this.props;
     const { type, autoLogin } = this.state;
+
+    const showWarnMsg = login.status === false &&
+    login.type === 'account' &&
+    !submitting ;
+
     return (
-      <div className={styles.main}>
+      <div className={styles.main} style={{
+        marginTop:showWarnMsg?215:235,
+        marginRight:140
+      }}>
         <Login
           defaultActiveKey={type}
           onTabChange={this.onTabChange}
@@ -95,9 +103,7 @@ class LoginPage extends Component {
           }}
         >
           <Tab key="account" tab={formatMessage({ id: 'app.login.tab-login-credentials' })}>
-            {login.status === false &&
-              login.type === 'account' &&
-              !submitting &&
+            { showWarnMsg &&
               this.renderMessage(formatMessage({ id: 'app.login.message-invalid-credentials' }))}
             <UserName
               name="userName"
