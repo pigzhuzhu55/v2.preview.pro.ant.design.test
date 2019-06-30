@@ -9,7 +9,7 @@ module.exports = {
   "menu": {
     "disableLocal": false
   },
-  "title": "Ant Design Pro",
+  "title": "老年大学管理系统",
   "pwa": false,
   "iconfontUrl": "",
   "collapse": true
