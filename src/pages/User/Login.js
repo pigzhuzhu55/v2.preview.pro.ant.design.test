@@ -6,6 +6,7 @@ import { Checkbox, Alert, Modal, Icon } from 'antd';
 import Login from '@/components/Login';
 import styles from './Login.less';
 
+
 // 加载路由的时候,会动态加载当前文件下的model文件,也就是对应文件下的src/models/login.js
 
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
@@ -78,7 +79,11 @@ class LoginPage extends Component {
   };
 
   renderMessage = content => (
-    <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon />
+    <Alert style={{
+       marginBottom: 24 ,
+      position: "absolute" ,
+      right: 200,
+      top: 230}} message={content} type="error" showIcon />
   );
 
   render() {
@@ -91,9 +96,11 @@ class LoginPage extends Component {
 
     return (
       <div className={styles.main} style={{
-        marginTop:showWarnMsg?215:235,
+        marginTop:235,
         marginRight:140
       }}>
+      { showWarnMsg &&
+        this.renderMessage(formatMessage({ id: 'app.login.message-invalid-credentials' }))}
         <Login
           defaultActiveKey={type}
           onTabChange={this.onTabChange}
@@ -103,8 +110,6 @@ class LoginPage extends Component {
           }}
         >
           <Tab key="account" tab={formatMessage({ id: 'app.login.tab-login-credentials' })}>
-            { showWarnMsg &&
-              this.renderMessage(formatMessage({ id: 'app.login.message-invalid-credentials' }))}
             <UserName
               name="userName"
               placeholder={`${formatMessage({ id: 'app.login.userName' })}: admin or user`}
@@ -117,7 +122,7 @@ class LoginPage extends Component {
             />
             <Password
               name="password"
-              placeholder={`${formatMessage({ id: 'app.login.password' })}: ant.design`}
+              placeholder={`${formatMessage({ id: 'app.login.password' })}: 123456`}
               rules={[
                 {
                   required: true,
