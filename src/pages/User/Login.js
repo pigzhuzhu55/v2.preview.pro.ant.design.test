@@ -82,8 +82,8 @@ class LoginPage extends Component {
     <Alert style={{
        marginBottom: 24 ,
       position: "absolute" ,
-      right: 200,
-      top: 230}} message={content} type="error" showIcon />
+      right: 165,
+      top: 240}} message={content} type="error" showIcon />
   );
 
   render() {
@@ -97,7 +97,7 @@ class LoginPage extends Component {
     return (
       <div className={styles.main} style={{
         marginTop:235,
-        marginRight:140
+        marginRight:100
       }}>
       { showWarnMsg &&
         this.renderMessage(formatMessage({ id: 'app.login.message-invalid-credentials' }))}
