@@ -1,28 +1,15 @@
-import { getDeptChildren, getDeptList, removeDept } from '@/services/api';
+import { getDeptChildren, getDeptAllList, removeDept } from '@/services/api';
 
 export default {
   namespace: 'deptList',
 
   state: {
-    treeData: [],
-    listData: {
-      list: [],
-      pagination: {},
-    },
+    list: [],
   },
 
   effects: {
-    *treeLoad({ payload, callback }, { call, put }) {
-      const response = yield call(getDeptChildren, payload.id);
-      yield put({
-        type: 'loadTree',
-        payload: response,
-      });
-      if (callback) callback();
-    },
-
     *listLoad({ payload }, { call, put }) {
-      const response = yield call(getDeptList, payload);
+      const response = yield call(getDeptAllList, payload);
       yield put({
         type: 'loadList',
         payload: response,
@@ -35,21 +22,12 @@ export default {
   },
 
   reducers: {
-    loadTree(state, action) {
-      return {
-        ...state,
-        treeData: action.payload.data,
-      };
-    },
     loadList(state, action) {
-      const { data: list, pagination } = action.payload;
+      const { data: list } = action.payload;
 
       return {
         ...state,
-        listData: {
-          list,
-          pagination,
-        },
+        list,
       };
     },
   },

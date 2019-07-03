@@ -2,7 +2,20 @@
 
 .main {
   width: 388px;
-  margin: 0 auto;
+  margin: auto;
+
+  @media (min-width: @screen-md-min) {
+    position: absolute;
+    top: 300px;
+    right: 100px;
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0 2px 12px rgba(13, 4, 8, 0.6);
+  }
+  @media (max-width: @screen-md-min) {
+    margin-top: ~'calc(50vh - 250px)';
+  }
+
   @media screen and (max-width: @screen-sm) {
     width: 95%;
   }
@@ -30,4 +43,3 @@
     }
   }
 }
-

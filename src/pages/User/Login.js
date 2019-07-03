@@ -6,7 +6,6 @@ import { Checkbox, Alert, Modal, Icon } from 'antd';
 import Login from '@/components/Login';
 import styles from './Login.less';
 
-
 // 加载路由的时候,会动态加载当前文件下的model文件,也就是对应文件下的src/models/login.js
 
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
@@ -79,28 +78,29 @@ class LoginPage extends Component {
   };
 
   renderMessage = content => (
-    <Alert style={{
-       marginBottom: 24 ,
-      position: "absolute" ,
-      right: 165,
-      top: 240}} message={content} type="error" showIcon />
+    <Alert
+      style={{
+        marginBottom: 24,
+        top: -20,
+        width: 300,
+        margin: 'auto',
+      }}
+      message={content}
+      type="error"
+      showIcon
+    />
   );
 
   render() {
     const { login, submitting } = this.props;
     const { type, autoLogin } = this.state;
 
-    const showWarnMsg = login.status === false &&
-    login.type === 'account' &&
-    !submitting ;
+    const showWarnMsg = login.status === false && login.type === 'account' && !submitting;
 
     return (
-      <div className={styles.main} style={{
-        marginTop:235,
-        marginRight:100
-      }}>
-      { showWarnMsg &&
-        this.renderMessage(formatMessage({ id: 'app.login.message-invalid-credentials' }))}
+      <div className={styles.main}>
+        {showWarnMsg &&
+          this.renderMessage(formatMessage({ id: 'app.login.message-invalid-credentials' }))}
         <Login
           defaultActiveKey={type}
           onTabChange={this.onTabChange}

@@ -134,6 +134,9 @@ export async function getDeptChildren(id) {
 export async function getDeptList(params) {
   return request(`/api/v1/organization/list?${stringify(params)}`);
 }
+export async function getDeptAllList() {
+  return request(`/api/v1/organization/allList`);
+}
 export async function removeDept(params) {
   return request('/api/v1/organization/remove', {
     method: 'POST',
