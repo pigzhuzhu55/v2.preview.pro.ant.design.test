@@ -14,6 +14,7 @@ import {
   Modal,
   message,
   Cascader,
+  Spin,
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { connect } from 'dva';
@@ -31,6 +32,7 @@ class CreateForm extends PureComponent {
     values: {},
   };
 
+
   okHandle = () => {
     const { form, handleAdd } = this.props;
     form.validateFields((err, fieldsValue) => {
@@ -41,66 +43,46 @@ class CreateForm extends PureComponent {
   };
 
   render() {
-    const { modalVisible, form, handleModalVisible, title } = this.props;
-    const residences = [
-      {
-        value: 'zhejiang',
-        label: 'Zhejiang',
-        children: [
-          {
-            value: 'hangzhou',
-            label: 'Hangzhou',
-            children: [
-              {
-                value: 'xihu',
-                label: 'West Lake',
-              },
-            ],
-          },
-        ],
+    const { modalVisible, form, handleModalVisible, title 
+      , residences,
+    loading2,} = this.props;
+
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 5 },
       },
-      {
-        value: 'jiangsu',
-        label: 'Jiangsu',
-        children: [
-          {
-            value: 'nanjing',
-            label: 'Nanjing',
-            children: [
-              {
-                value: 'zhonghuamen',
-                label: 'Zhong Hua Men',
-              },
-            ],
-          },
-        ],
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 18 },
       },
-    ];
+    };
 
     return (
       <Modal
+        
         destroyOnClose
         title={title}
         visible={modalVisible}
         onOk={this.okHandle}
         onCancel={() => handleModalVisible()}
-      >
-        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="机构名称">
-          {form.getFieldDecorator('orgName', {
-            rules: [{ required: true, message: '请输入机构名称！' }],
-          })(<Input placeholder="请输入" />)}
-        </FormItem>
-        <FormItem label="上一级机构">
-          {form.getFieldDecorator('pid', {
-            initialValue: {
-              value: '0',
-              label: '请选择...',
-            },
-            rules: [
-              { type: 'array', required: true, message: 'Please select your habitual residence!' },
-            ],
-          })(<Cascader options={residences} />)}
-        </FormItem>
+      ><Spin spinning={loading2}>
+        <Form {...formItemLayout} >
+          <FormItem  label="机构名称">
+            {form.getFieldDecorator('orgName', {
+              rules: [{ required: true, message: '请输入机构名称！' }],
+            })(<Input placeholder="请输入" />)}
+          </FormItem>
+          <FormItem label="上一级机构">
+            {form.getFieldDecorator('pid', {
+              initialValue: ['老年系统'],
+              rules: [
+                { type: 'array', required: true, message: 'Please select your habitual residence!' },
+              ],
+            })(<Cascader options={residences} changeOnSelect/>)}
+          </FormItem>
+        </Form>
+        </Spin>
       </Modal>
     );
   }
@@ -110,6 +92,7 @@ class CreateForm extends PureComponent {
 @connect(({ deptList, loading }) => ({
   deptList,
   loading: loading.effects['deptList/listLoad'],
+  loading2: loading.effects['deptList/cascadersLoad'],
 }))
 @Form.create()
 class DeptList extends PureComponent {
@@ -166,6 +149,22 @@ class DeptList extends PureComponent {
       modalVisible: !!flag,
       title,
     });
+
+    if(!!flag)
+    {
+      const { dispatch } = this.props;
+      return new Promise(resolve => {
+        const params = {
+        };
+  
+        dispatch({
+          type: 'deptList/cascadersLoad',
+          payload: params,
+        });
+  
+        resolve();
+      });
+    }
   };
 
   handleAdd = fields => {
@@ -175,8 +174,9 @@ class DeptList extends PureComponent {
 
   render() {
     const {
-      deptList: { list },
+      deptList: { list ,residences},
       loading,
+      loading2,
     } = this.props;
 
     const { title, modalVisible } = this.state;
@@ -217,7 +217,7 @@ class DeptList extends PureComponent {
           </div>
         </Card>
 
-        <CreateForm {...parentMethods} modalVisible={modalVisible} />
+        <CreateForm {...parentMethods} modalVisible={modalVisible} loading2={loading2} residences={residences}/>
       </PageHeaderWrapper>
     );
   }

@@ -137,6 +137,9 @@ export async function getDeptList(params) {
 export async function getDeptAllList() {
   return request(`/api/v1/organization/allList`);
 }
+export async function getDeptAllCascaders() {
+  return request(`/api/v1/organization/allCascaders`);
+}
 export async function removeDept(params) {
   return request('/api/v1/organization/remove', {
     method: 'POST',

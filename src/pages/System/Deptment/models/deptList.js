@@ -1,10 +1,11 @@
-import { getDeptChildren, getDeptAllList, removeDept } from '@/services/api';
+import { getDeptAllCascaders, getDeptAllList, removeDept } from '@/services/api';
 
 export default {
   namespace: 'deptList',
 
   state: {
     list: [],
+    residences:[],
   },
 
   effects: {
@@ -12,6 +13,13 @@ export default {
       const response = yield call(getDeptAllList, payload);
       yield put({
         type: 'loadList',
+        payload: response,
+      });
+    },
+    *cascadersLoad({ payload }, { call, put }) {
+      const response = yield call(getDeptAllCascaders, payload);
+      yield put({
+        type: 'loadCascaders',
         payload: response,
       });
     },
@@ -28,6 +36,14 @@ export default {
       return {
         ...state,
         list,
+      };
+    },
+    loadCascaders(state, action) {
+      const { data: residences } = action.payload;
+
+      return {
+        ...state,
+        residences,
       };
     },
   },
