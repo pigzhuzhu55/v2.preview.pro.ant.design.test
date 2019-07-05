@@ -38,6 +38,7 @@ module.exports = {
     'react/no-unused-state': 0,
     'react/destructuring-assignment': 0,
     'no-unused-vars': 0,
+    'import/no-useless-path-segments': 0,
   },
   settings: {
     polyfills: ['fetch', 'promises', 'url', 'object-assign'],

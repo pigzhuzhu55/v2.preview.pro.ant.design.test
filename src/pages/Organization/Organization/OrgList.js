@@ -3,6 +3,8 @@ import { connect } from 'dva';
 import { Row, Col, Card, Form, Input, Menu, Icon, Button, Divider, Dropdown, Badge } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import StandardTable from '@/components/StandardTable';
+import TablePageHeaderBox1 from '@/components/My/TablePageHeaderBox1';
+
 import { FormattedMessage } from 'umi-plugin-react/locale';
 
 import styles from './OrgList.less';
@@ -158,102 +160,9 @@ class OrgList extends PureComponent {
     }
   };
 
-  renderForm() {
-    const { expandForm } = this.state;
-    return expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
-  }
-
-  renderSimpleForm() {
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
-
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="机构名称">
-              {getFieldDecorator('orgName')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="电话号码">
-              {getFieldDecorator('telephone')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
-                查询
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                重置
-              </Button>
-              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                展开 <Icon type="down" />
-              </a>
-            </span>
-          </Col>
-        </Row>
-      </Form>
-    );
-  }
-
-  renderAdvancedForm() {
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="机构名称">
-              {getFieldDecorator('orgName')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="电话号码">
-              {getFieldDecorator('telephone')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="账户">
-              {getFieldDecorator('account')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="合同过期时间开始">
-              {getFieldDecorator('expireTimeStart')(<Input placeholder="TODO.." />)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="合同过期时间结束">
-              {getFieldDecorator('expireTimeEnd')(<Input placeholder="TODO.." />)}
-            </FormItem>
-          </Col>
-        </Row>
-        <div style={{ overflow: 'hidden' }}>
-          <div style={{ marginBottom: 24 }}>
-            <Button type="primary" htmlType="submit">
-              查询
-            </Button>
-            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-              重置
-            </Button>
-            <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-              收起 <Icon type="up" />
-            </a>
-          </div>
-        </div>
-      </Form>
-    );
-  }
-
   render() {
+    const buttons = [{ text: '新增', type: 'primary' }, { text: '移除' }];
+
     const {
       orgList: { listData },
       loading,
@@ -270,7 +179,7 @@ class OrgList extends PureComponent {
     );
 
     return (
-      <PageHeaderWrapper title={<FormattedMessage id="menu.org.organization" />}>
+      <PageHeaderWrapper>
         <Card
           bordered={false}
           style={{
@@ -279,15 +188,15 @@ class OrgList extends PureComponent {
           }}
         >
           <div className={styles.tableList}>
-            <div className={styles.tableListForm}>{this.renderForm()}</div>
+            <TablePageHeaderBox1 buttons={buttons} />
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+              <Button icon="plus" size="small" onClick={() => this.handleModalVisible(true)}>
                 新建
               </Button>
               {selectedRows.length > 0 && (
                 <span>
                   <Dropdown overlay={menu}>
-                    <Button>
+                    <Button size="small">
                       更多操作 <Icon type="down" />
                     </Button>
                   </Dropdown>
@@ -295,6 +204,7 @@ class OrgList extends PureComponent {
               )}
             </div>
             <StandardTable
+              size="small"
               selectedRows={selectedRows}
               loading={loading}
               data={listData}

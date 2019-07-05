@@ -34,7 +34,6 @@ ol {
   list-style: none;
 }
 
-
 @media (max-width: @screen-xs) {
   .ant-table {
     width: 100%;
@@ -56,8 +55,8 @@ ol {
   width: 8px;
 }
 *::-webkit-scrollbar-thumb {
-  border-radius: 3px;
   background-color: rgba(29, 34, 40, 0.2);
+  border-radius: 3px;
 }
 *::-webkit-scrollbar-track {
   background: inherit;
@@ -66,8 +65,26 @@ ol {
 *::-webkit-scrollbar-scrollbarbutton:hover {
   background-color: rgba(29, 34, 40, 0.4);
 }
-.antd-pro-pages-user-login-main{
-  .ant-form-explain{
+.antd-pro-pages-user-login-main {
+  .ant-form-explain {
     display: none;
   }
+}
+
+.floatL {
+  float: left;
+}
+
+.floatR {
+  float: right;
+}
+
+.clearfix::after {
+  clear: both;
+}
+
+.clearfix::after,
+.clearfix::before {
+  display: table;
+  content: ' ';
 }

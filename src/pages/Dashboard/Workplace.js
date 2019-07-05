@@ -1,11 +1,13 @@
-import React, { PureComponent, Form } from 'react';
+import React, { PureComponent } from 'react';
 
+import TablePageHeaderBox1 from './../../components/My/TablePageHeaderBox1';
 import styles from './Workplace.less';
 
-@Form.create()
 class Workplace extends PureComponent {
   render() {
-    return <div>ff</div>;
+    const buttons = [{ text: '新增', type: 'primary' }, { text: '移除' }];
+
+    return <TablePageHeaderBox1 buttons={buttons} />;
   }
 }
 

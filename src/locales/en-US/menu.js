@@ -8,6 +8,7 @@ export default {
   'menu.result.success': 'Success',
   'menu.result.fail': 'Fail',
   'menu.exception': 'Exception',
+  'menu.exception.trigger': 'Trigger',
   'menu.exception.not-permission': '403',
   'menu.exception.not-find': '404',
   'menu.exception.server-error': '500',

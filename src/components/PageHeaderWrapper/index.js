@@ -63,18 +63,22 @@ const PageHeaderWrapper = ({
               >
                 <PageHeader
                   title={
-                    <>
-                      {logo && <span className={styles.logo}>{logo}</span>}
-                      <Title
-                        level={4}
-                        style={{
-                          marginBottom: 0,
-                          display: 'inline-block',
-                        }}
-                      >
-                        {title}
-                      </Title>
-                    </>
+                    title && (
+                      <>
+                        {logo && <span className={styles.logo}>{logo}</span>}
+                        {title && (
+                          <Title
+                            level={4}
+                            style={{
+                              marginBottom: 0,
+                              display: 'inline-block',
+                            }}
+                          >
+                            {title}
+                          </Title>
+                        )}
+                      </>
+                    )
                   }
                   key="pageheader"
                   {...restProps}
@@ -92,14 +96,18 @@ const PageHeaderWrapper = ({
                   linkElement={Link}
                   footer={renderFooter(restProps)}
                 >
-                  <div className={styles.detail}>
-                    <div className={styles.main}>
-                      <div className={styles.row}>
-                        {content && <div className={styles.content}>{content}</div>}
-                        {extraContent && <div className={styles.extraContent}>{extraContent}</div>}
+                  {(content || extraContent) && (
+                    <div className={styles.detail}>
+                      <div className={styles.main}>
+                        <div className={styles.row}>
+                          {content && <div className={styles.content}>{content}</div>}
+                          {extraContent && (
+                            <div className={styles.extraContent}>{extraContent}</div>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </PageHeader>
               </div>
             </div>
