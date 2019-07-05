@@ -9,6 +9,7 @@
   "rules": {
     "no-descending-specificity": null,
     "plugin/declaration-block-no-ignored-properties": true,
-    "block-no-empty": null
+    "block-no-empty": null,
+    "order/properties-order": null
   }
 }

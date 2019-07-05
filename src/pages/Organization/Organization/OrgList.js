@@ -1,8 +1,8 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Form, Input, Menu, Icon, Button, Divider, Dropdown, Badge } from 'antd';
+import { Row, Col, Form, Input, Menu, Icon, Button, Divider, Dropdown, Badge } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import StandardTable from '@/components/StandardTable';
+import GeneralTable from '@/components/My/GeneralTable';
 import TablePageHeaderBox1 from '@/components/My/TablePageHeaderBox1';
 
 import { FormattedMessage } from 'umi-plugin-react/locale';
@@ -136,30 +136,6 @@ class OrgList extends PureComponent {
     });
   };
 
-  handleMenuClick = e => {
-    const { dispatch } = this.props;
-    const { selectedRows } = this.state;
-
-    if (selectedRows.length === 0) return;
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'orgList/remove',
-          payload: {
-            key: selectedRows.map(row => row.key),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
-        });
-        break;
-      default:
-        break;
-    }
-  };
-
   render() {
     const buttons = [{ text: '新增', type: 'primary' }, { text: '移除' }];
 
@@ -170,49 +146,21 @@ class OrgList extends PureComponent {
 
     const { selectedRows } = this.state;
 
-    const bodyHeight = document.body.clientHeight - 170;
-
-    const menu = (
-      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
-      </Menu>
-    );
-
     return (
       <PageHeaderWrapper>
-        <Card
-          bordered={false}
-          style={{
-            height: bodyHeight,
-            overflowY: 'auto',
-          }}
-        >
-          <div className={styles.tableList}>
-            <TablePageHeaderBox1 buttons={buttons} />
-            <div className={styles.tableListOperator}>
-              <Button icon="plus" size="small" onClick={() => this.handleModalVisible(true)}>
-                新建
-              </Button>
-              {selectedRows.length > 0 && (
-                <span>
-                  <Dropdown overlay={menu}>
-                    <Button size="small">
-                      更多操作 <Icon type="down" />
-                    </Button>
-                  </Dropdown>
-                </span>
-              )}
-            </div>
-            <StandardTable
-              size="small"
-              selectedRows={selectedRows}
-              loading={loading}
-              data={listData}
-              columns={this.columns}
-              onSelectRow={this.handleSelectRows}
-            />
-          </div>
-        </Card>
+        <div className={styles.tableHead}>
+          <TablePageHeaderBox1 buttons={buttons} />
+        </div>
+        <div className={styles.tableContent}>
+          <GeneralTable
+            size="small"
+            selectedRows={selectedRows}
+            loading={loading}
+            data={listData}
+            columns={this.columns}
+            onSelectRow={this.handleSelectRows}
+          />
+        </div>
       </PageHeaderWrapper>
     );
   }

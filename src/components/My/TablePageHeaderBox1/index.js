@@ -32,12 +32,12 @@ export default class TablePageHeaderBox1 extends Component {
         </div>
         <div className={classNames(styles.boxR, 'floatR')}>
           <InputGroup compact>
-            <Select defaultValue="Zhejiang">
-              <Option value="Zhejiang">Zhejiang</Option>
-              <Option value="Jiangsu">Jiangsu</Option>
+            <Select defaultValue="机构名称">
+              <Option value="机构名称">机构名称</Option>
+              <Option value="电话号码">电话号码</Option>
             </Select>
             <Search
-              placeholder="input search text"
+              placeholder="请输入机构名称"
               onSearch={value => console.log(value)}
               style={{ width: 200 }}
             />
