@@ -32,7 +32,6 @@ class CreateForm extends PureComponent {
     values: {},
   };
 
-
   okHandle = () => {
     const { form, handleAdd } = this.props;
     form.validateFields((err, fieldsValue) => {
@@ -43,9 +42,7 @@ class CreateForm extends PureComponent {
   };
 
   render() {
-    const { modalVisible, form, handleModalVisible, title 
-      , residences,
-    loading2,} = this.props;
+    const { modalVisible, form, handleModalVisible, title, residences, loading2 } = this.props;
 
     const formItemLayout = {
       labelCol: {
@@ -60,28 +57,30 @@ class CreateForm extends PureComponent {
 
     return (
       <Modal
-        
         destroyOnClose
         title={title}
         visible={modalVisible}
         onOk={this.okHandle}
         onCancel={() => handleModalVisible()}
-      ><Spin spinning={loading2}>
-        <Form {...formItemLayout} >
-          <FormItem  label="机构名称">
-            {form.getFieldDecorator('orgName', {
-              rules: [{ required: true, message: '请输入机构名称！' }],
-            })(<Input placeholder="请输入" />)}
-          </FormItem>
-          <FormItem label="上一级机构">
-            {form.getFieldDecorator('pid', {
-              initialValue: ['老年系统'],
-              rules: [
-                { type: 'array', required: true, message: 'Please select your habitual residence!' },
-              ],
-            })(<Cascader options={residences} changeOnSelect/>)}
-          </FormItem>
-        </Form>
+      >
+        <Spin spinning={loading2}>
+          <Form {...formItemLayout}>
+            <FormItem label="机构名称">
+              {form.getFieldDecorator('orgName', {
+                rules: [{ required: true, message: '请输入机构名称！' }],
+              })(<Input placeholder="请输入" />)}
+            </FormItem>
+            <FormItem label="上一级机构">
+              {form.getFieldDecorator('pid', {})(
+                <Cascader options={residences} changeOnSelect placeholder="无" />
+              )}
+            </FormItem>
+            <FormItem label="机构后缀">
+              {form.getFieldDecorator('orgName', {
+                rules: [{ required: true, message: '请输入机构名称！' }],
+              })(<Input placeholder="请输入" />)}
+            </FormItem>
+          </Form>
         </Spin>
       </Modal>
     );
@@ -105,12 +104,12 @@ class DeptList extends PureComponent {
 
   columns = [
     {
-      title: '机构名称',
-      dataIndex: 'orgName',
+      title: '部门名称',
+      dataIndex: 'deptName',
     },
     {
-      title: '机构后缀',
-      dataIndex: 'orgSuffix',
+      title: '部门电话',
+      dataIndex: 'telephone',
     },
     {
       title: '创建时间',
@@ -150,21 +149,18 @@ class DeptList extends PureComponent {
       title,
     });
 
-    if(!!flag)
-    {
-      const { dispatch } = this.props;
-      return new Promise(resolve => {
-        const params = {
-        };
-  
+    return new Promise(resolve => {
+      if (!flag) {
+        const { dispatch } = this.props;
+        const params = {};
+
         dispatch({
           type: 'deptList/cascadersLoad',
           payload: params,
         });
-  
-        resolve();
-      });
-    }
+      }
+      resolve();
+    });
   };
 
   handleAdd = fields => {
@@ -174,7 +170,7 @@ class DeptList extends PureComponent {
 
   render() {
     const {
-      deptList: { list ,residences},
+      deptList: { list, residences },
       loading,
       loading2,
     } = this.props;
@@ -189,7 +185,7 @@ class DeptList extends PureComponent {
     const bodyHeight = document.body.clientHeight - 170;
 
     return (
-      <PageHeaderWrapper title={<FormattedMessage id="menu.system.deptment" />}>
+      <PageHeaderWrapper title={<FormattedMessage id="menu.inner.deptment" />}>
         <Card
           bordered={false}
           style={{
@@ -217,7 +213,12 @@ class DeptList extends PureComponent {
           </div>
         </Card>
 
-        <CreateForm {...parentMethods} modalVisible={modalVisible} loading2={loading2} residences={residences}/>
+        <CreateForm
+          {...parentMethods}
+          modalVisible={modalVisible}
+          loading2={loading2}
+          residences={residences}
+        />
       </PageHeaderWrapper>
     );
   }

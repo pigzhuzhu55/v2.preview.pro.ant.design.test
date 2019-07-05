@@ -1,113 +1,12 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 
-export async function queryProjectNotice() {
-  return request('/api/project/notice');
+export async function queryNotices(params = {}) {
+  return request(`/api/notices?${stringify(params)}`);
 }
 
-export async function queryActivities() {
-  return request('/api/activities');
-}
-
-export async function queryRule(params) {
-  return request(`/api/rule?${stringify(params)}`);
-}
-
-export async function removeRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'delete',
-    },
-  });
-}
-
-export async function addRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'post',
-    },
-  });
-}
-
-export async function updateRule(params = {}) {
-  return request(`/api/rule?${stringify(params.query)}`, {
-    method: 'POST',
-    data: {
-      ...params.body,
-      method: 'update',
-    },
-  });
-}
-
-export async function fakeSubmitForm(params) {
-  return request('/api/forms', {
-    method: 'POST',
-    data: params,
-  });
-}
-
-export async function fakeChartData() {
-  return request('/api/fake_chart_data');
-}
-
-export async function queryTags() {
-  return request('/api/tags');
-}
-
-export async function queryBasicProfile(id) {
-  return request(`/api/profile/basic?id=${id}`);
-}
-
-export async function queryAdvancedProfile() {
-  return request('/api/profile/advanced');
-}
-
-export async function queryFakeList(params) {
-  return request(`/api/fake_list?${stringify(params)}`);
-}
-
-export async function removeFakeList(params) {
-  const { count = 5, ...restParams } = params;
-  return request(`/api/fake_list?count=${count}`, {
-    method: 'POST',
-    data: {
-      ...restParams,
-      method: 'delete',
-    },
-  });
-}
-
-export async function addFakeList(params) {
-  const { count = 5, ...restParams } = params;
-  return request(`/api/fake_list?count=${count}`, {
-    method: 'POST',
-    data: {
-      ...restParams,
-      method: 'post',
-    },
-  });
-}
-
-export async function updateFakeList(params) {
-  const { count = 5, ...restParams } = params;
-  return request(`/api/fake_list?count=${count}`, {
-    method: 'POST',
-    data: {
-      ...restParams,
-      method: 'update',
-    },
-  });
-}
-
-export async function fakeAccountLogin(params) {
-  return request('/api/none/sign/in', {
-    method: 'POST',
-    data: params,
-  });
+export async function getFakeCaptcha(mobile) {
+  return request(`/api/captcha?mobile=${mobile}`);
 }
 
 export async function fakeRegister(params) {
@@ -117,31 +16,34 @@ export async function fakeRegister(params) {
   });
 }
 
-export async function queryNotices(params = {}) {
-  return request(`/api/notices?${stringify(params)}`);
-}
+/**
+ * 登录
+ */
 
-export async function getFakeCaptcha(mobile) {
-  return request(`/api/captcha?mobile=${mobile}`);
+export async function fakeAccountLogin(params) {
+  return request('/api/none/sign/in', {
+    method: 'POST',
+    data: params,
+  });
 }
 
 /**
- * 组织管理
+ * 部门管理
  */
 export async function getDeptChildren(id) {
-  return request(`/api/v1/organization/treeNodes?id=${id}`);
+  return request(`/api/v1/deptment/treeNodes?id=${id}`);
 }
 export async function getDeptList(params) {
-  return request(`/api/v1/organization/list?${stringify(params)}`);
+  return request(`/api/v1/deptment/list?${stringify(params)}`);
 }
 export async function getDeptAllList() {
-  return request(`/api/v1/organization/allList`);
+  return request(`/api/v1/deptment/allList`);
 }
 export async function getDeptAllCascaders() {
-  return request(`/api/v1/organization/allCascaders`);
+  return request(`/api/v1/deptment/allCascaders`);
 }
 export async function removeDept(params) {
-  return request('/api/v1/organization/remove', {
+  return request('/api/v1/deptment/remove', {
     method: 'POST',
     data: params,
   });
@@ -180,6 +82,20 @@ export async function getUserList(params) {
 
 export async function removeUser(params) {
   return request('/api/v1/user/remove', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/**
+ * 组织结构管理
+ */
+export async function getOrganizationList(params) {
+  return request(`/api/v1/organization/list?${stringify(params)}`);
+}
+
+export async function removeOrganization(params) {
+  return request('/api/v1/organization/remove', {
     method: 'POST',
     data: params,
   });

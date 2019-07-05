@@ -5,7 +5,7 @@ export default {
 
   state: {
     list: [],
-    residences:[],
+    residences: [],
   },
 
   effects: {

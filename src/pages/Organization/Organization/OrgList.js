@@ -1,21 +1,26 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Card, Form, Input, Menu, Icon, Button, Divider, Dropdown, Badge } from 'antd';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import StandardTable from '@/components/StandardTable';
+import { FormattedMessage } from 'umi-plugin-react/locale';
 
-import styles from './UserList.less';
+import styles from './OrgList.less';
 
 const FormItem = Form.Item;
 
+const orgTypeMap = ['red', 'orange'];
+const orgType = ['直营', '加盟'];
+
 /* eslint react/no-multi-comp:0 */
-@connect(({ userList, loading }) => ({
-  userList,
-  loading: loading.effects['userList/listLoad'],
+@connect(({ orgList, loading }) => ({
+  orgList,
+  loading: loading.models.orgList,
 }))
 @Form.create()
-class UserList extends PureComponent {
+class OrgList extends PureComponent {
   state = {
-    userListData: [],
+    orgListData: [],
     selectedRows: [],
     expandForm: false,
     formValues: {},
@@ -27,28 +32,35 @@ class UserList extends PureComponent {
       dataIndex: 'key',
     },
     {
-      title: '用户名称',
-      dataIndex: 'name',
+      title: '机构名称',
+      dataIndex: 'orgName',
+    },
+    {
+      title: '性质',
+      dataIndex: 'orgType',
+      render(val) {
+        return <Badge color={orgTypeMap[val]} text={orgType[val]} />;
+      },
     },
     {
       title: '电话号码',
       dataIndex: 'telephone',
     },
     {
-      title: '帐号',
-      dataIndex: 'account',
+      title: '合同过期时间',
+      dataIndex: 'expireTime',
     },
     {
-      title: '最后一次登录时间',
-      dataIndex: 'lastLoginTime',
+      title: '创建时间',
+      dataIndex: 'createTime',
     },
     {
       title: '操作',
       render: text => (
         <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true)}>查看</a>
+          <a onClick={() => this.handleUpdateModalVisible(true)}>修改</a>
           <Divider type="vertical" />
-          <a href="">删除</a>
+          <a href="">合同</a>
         </Fragment>
       ),
     },
@@ -57,7 +69,7 @@ class UserList extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'userList/listLoad',
+      type: 'orgList/listLoad',
     });
   }
 
@@ -85,7 +97,7 @@ class UserList extends PureComponent {
       });
 
       dispatch({
-        type: 'userList/listLoad',
+        type: 'orgList/listLoad',
         payload: values,
       });
     });
@@ -110,7 +122,7 @@ class UserList extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'userList/listLoad',
+      type: 'orgList/listLoad',
       payload: {},
     });
   };
@@ -130,7 +142,7 @@ class UserList extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'userList/remove',
+          type: 'orgList/remove',
           payload: {
             key: selectedRows.map(row => row.key),
           },
@@ -160,8 +172,8 @@ class UserList extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="用户名称">
-              {getFieldDecorator('userName')(<Input placeholder="请输入" />)}
+            <FormItem label="机构名称">
+              {getFieldDecorator('orgName')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -195,8 +207,8 @@ class UserList extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="用户名称">
-              {getFieldDecorator('userName')(<Input placeholder="请输入" />)}
+            <FormItem label="机构名称">
+              {getFieldDecorator('orgName')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -212,8 +224,15 @@ class UserList extends PureComponent {
         </Row>
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="所属部门">
-              {getFieldDecorator('orgId')(<Input placeholder="TODO.." />)}
+            <FormItem label="合同过期时间开始">
+              {getFieldDecorator('expireTimeStart')(<Input placeholder="TODO.." />)}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+          <Col md={8} sm={24}>
+            <FormItem label="合同过期时间结束">
+              {getFieldDecorator('expireTimeEnd')(<Input placeholder="TODO.." />)}
             </FormItem>
           </Col>
         </Row>
@@ -236,11 +255,13 @@ class UserList extends PureComponent {
 
   render() {
     const {
-      userList: { listData },
+      orgList: { listData },
       loading,
     } = this.props;
 
     const { selectedRows } = this.state;
+
+    const bodyHeight = document.body.clientHeight - 170;
 
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
@@ -249,34 +270,42 @@ class UserList extends PureComponent {
     );
 
     return (
-      <Card bordered={false}>
-        <div className={styles.tableList}>
-          <div className={styles.tableListForm}>{this.renderForm()}</div>
-          <div className={styles.tableListOperator}>
-            <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-              新建
-            </Button>
-            {selectedRows.length > 0 && (
-              <span>
-                <Dropdown overlay={menu}>
-                  <Button>
-                    更多操作 <Icon type="down" />
-                  </Button>
-                </Dropdown>
-              </span>
-            )}
+      <PageHeaderWrapper title={<FormattedMessage id="menu.org.organization" />}>
+        <Card
+          bordered={false}
+          style={{
+            height: bodyHeight,
+            overflowY: 'auto',
+          }}
+        >
+          <div className={styles.tableList}>
+            <div className={styles.tableListForm}>{this.renderForm()}</div>
+            <div className={styles.tableListOperator}>
+              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+                新建
+              </Button>
+              {selectedRows.length > 0 && (
+                <span>
+                  <Dropdown overlay={menu}>
+                    <Button>
+                      更多操作 <Icon type="down" />
+                    </Button>
+                  </Dropdown>
+                </span>
+              )}
+            </div>
+            <StandardTable
+              selectedRows={selectedRows}
+              loading={loading}
+              data={listData}
+              columns={this.columns}
+              onSelectRow={this.handleSelectRows}
+            />
           </div>
-          <StandardTable
-            selectedRows={selectedRows}
-            loading={loading}
-            data={listData}
-            columns={this.columns}
-            onSelectRow={this.handleSelectRows}
-          />
-        </div>
-      </Card>
+        </Card>
+      </PageHeaderWrapper>
     );
   }
 }
 
-export default UserList;
+export default OrgList;

@@ -24,30 +24,12 @@ export default [
     Routes: ['src/pages/Authorized'],
     routes: [
       // dashboard
-      { path: '/', redirect: '/dashboard/analysis' },
+      { path: '/', redirect: '/workplace' },
       {
-        path: '/dashboard',
-        name: 'dashboard',
-        icon: 'dashboard',
-        routes: [
-          {
-            path: '/dashboard/analysis',
-            name: 'analysis',
-            component: './Dashboard/Analysis',
-          },
-          {
-            path: '/dashboard/monitor',
-            name: 'monitor',
-            component: './Dashboard/Monitor',
-            authority: ['admin'],
-          },
-          {
-            path: '/dashboard/workplace',
-            name: 'workplace',
-            component: './Dashboard/Workplace',
-            authority: ['admin'],
-          },
-        ],
+        path: '/workplace',
+        name: 'workplace',
+        icon: 'desktop',
+        component: './Dashboard/Workplace',
       },
       {
         name: 'exception',
@@ -79,15 +61,35 @@ export default [
         ],
       },
       {
-        path: '/system',
-        icon: 'appstore',
-        name: 'system',
+        path: '/org',
+        icon: 'apartment',
+        name: 'org',
         routes: [
           {
-            path: '/system/deptlist',
-            name: 'deptment',
-            component: './System/Deptment/DeptList',
+            path: '/org/organization',
+            name: 'organization',
+            component: './Organization/Organization/OrgList',
           },
+        ],
+      },
+      //内部管理 这个节点是另外一个系统的
+      {
+        path: '/inner',
+        icon: 'bank',
+        name: 'inner',
+        routes: [
+          {
+            path: '/inner/deptlist',
+            name: 'deptment',
+            component: './InnerManager/Deptment/DeptList',
+          },
+        ],
+      },
+      {
+        path: '/system',
+        icon: 'setting',
+        name: 'system',
+        routes: [
           {
             path: '/system/modulelist',
             name: 'module',
