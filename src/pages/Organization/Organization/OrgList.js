@@ -139,6 +139,10 @@ class OrgList extends PureComponent {
 
   render() {
     const buttons = [{ text: '新增', type: 'primary' }, { text: '移除' }];
+    const options = [
+      { text: '机构名称', value: 'orgName',placeholder:'请输入机构名称', default:true }, 
+      { text: '电话号码', value: 'telephone',placeholder:'请输入电话号码' }];
+
 
     const {
       orgList: { listData },
@@ -150,7 +154,7 @@ class OrgList extends PureComponent {
     return (
       <PageHeaderWrapper>
         <div className={styles.tableHead}>
-          <TablePageHeaderBox1 buttons={buttons} />
+          <TablePageHeaderBox1 buttons={buttons} options={options}/>
           <TablePageHeaderBox2  />
 
         </div>
