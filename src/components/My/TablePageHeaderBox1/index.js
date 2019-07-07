@@ -19,7 +19,7 @@ export default class TablePageHeaderBox1 extends Component {
     const { buttons } = this.props;
 
     return (
-      <div className={classNames(styles.box1, 'clearfix')}>
+      <div className={classNames(styles.box, 'clearfix')}>
         <div className={classNames(styles.boxL, 'floatL')}>
           {buttons.map(
             item =>

@@ -4,6 +4,7 @@ import { Row, Col, Form, Input, Menu, Icon, Button, Divider, Dropdown, Badge } f
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import GeneralTable from '@/components/My/GeneralTable';
 import TablePageHeaderBox1 from '@/components/My/TablePageHeaderBox1';
+import TablePageHeaderBox2 from '@/components/My/TablePageHeaderBox2';
 
 import { FormattedMessage } from 'umi-plugin-react/locale';
 
@@ -150,6 +151,8 @@ class OrgList extends PureComponent {
       <PageHeaderWrapper>
         <div className={styles.tableHead}>
           <TablePageHeaderBox1 buttons={buttons} />
+          <TablePageHeaderBox2  />
+
         </div>
         <div className={styles.tableContent}>
           <GeneralTable
