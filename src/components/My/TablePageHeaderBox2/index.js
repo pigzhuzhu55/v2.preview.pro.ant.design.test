@@ -72,7 +72,6 @@ export default class TablePageHeaderBox2 extends Component {
             <a className="floatR">清空筛选</a>
             <div className={styles.selectedbox}>
               <MySelectBox />
-              <MySelectBox />
             </div>
           </div>
         </div>
