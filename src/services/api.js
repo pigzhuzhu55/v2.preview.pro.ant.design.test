@@ -100,3 +100,10 @@ export async function removeOrganization(params) {
     data: params,
   });
 }
+
+/**
+ * 省市县
+ */
+export async function getProvinceList(params) {
+  return request(`/api/none/common/province/list?${stringify(params)}`);
+}

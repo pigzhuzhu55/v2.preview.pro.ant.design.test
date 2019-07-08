@@ -1,4 +1,4 @@
-import { getOrganizationList, removeOrganization } from '@/services/api';
+import { getOrganizationList, removeOrganization, getProvinceList } from '@/services/api';
 
 export default {
   namespace: 'orgList',
@@ -8,6 +8,7 @@ export default {
       list: [],
       pagination: {},
     },
+    proviceData: [],
   },
 
   effects: {
@@ -21,6 +22,10 @@ export default {
     *remove({ payload, callback }, { call }) {
       yield call(removeOrganization, payload);
       if (callback) callback();
+    },
+    *listProvince({ payload, callback }, { call }) {
+      const response = yield call(getProvinceList, payload);
+      if (callback) callback(response);
     },
   },
 

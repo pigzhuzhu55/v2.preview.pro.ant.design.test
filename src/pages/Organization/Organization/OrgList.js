@@ -27,6 +27,12 @@ class OrgList extends PureComponent {
     selectedRows: [],
     expandForm: false,
     formValues: {},
+
+    version: 0,
+    proviceOption: {
+      version: 0,
+      options: [],
+    },
   };
 
   columns = [
@@ -71,8 +77,27 @@ class OrgList extends PureComponent {
 
   componentDidMount() {
     const { dispatch } = this.props;
+
     dispatch({
       type: 'orgList/listLoad',
+    });
+
+    dispatch({
+      type: 'orgList/listProvince',
+      payload: {},
+      callback: response => {
+        const { version, proviceOption } = this.state;
+        const version2 = version + 1;
+        const version3 = proviceOption.version + 1;
+        const options = response.data;
+        this.setState({
+          version: version2,
+          proviceOption: {
+            version: version3,
+            options,
+          },
+        });
+      },
     });
   }
 
@@ -87,22 +112,15 @@ class OrgList extends PureComponent {
 
     const { dispatch, form } = this.props;
 
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
+    const values = {};
 
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
+    this.setState({
+      formValues: values,
+    });
 
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'orgList/listLoad',
-        payload: values,
-      });
+    dispatch({
+      type: 'orgList/listLoad',
+      payload: values,
     });
   };
 
@@ -140,23 +158,43 @@ class OrgList extends PureComponent {
   render() {
     const buttons = [{ text: '新增', type: 'primary' }, { text: '移除' }];
     const options = [
-      { text: '机构名称', value: 'orgName',placeholder:'请输入机构名称', default:true }, 
-      { text: '电话号码', value: 'telephone',placeholder:'请输入电话号码' }];
+      { text: '机构名称', value: 'orgName', placeholder: '请输入机构名称', default: true },
+      { text: '电话号码', value: 'telephone', placeholder: '请输入电话号码' },
+    ];
 
+    const { proviceOption, expandForm, selectedRows, version } = this.state;
+
+    const filters = {
+      version,
+      filters: [
+        {
+          text: '性质',
+          key: 'orgType',
+          parent: '',
+          children: '',
+          options: {
+            version: 0,
+            options: [{ title: '直营', key: '0' }, { title: '加盟', key: '1' }],
+          },
+        },
+        { text: '省份', key: 'province', parent: '', children: '', options: proviceOption },
+      ],
+    };
 
     const {
       orgList: { listData },
       loading,
     } = this.props;
 
-    const { selectedRows } = this.state;
-
     return (
       <PageHeaderWrapper>
         <div className={styles.tableHead}>
-          <TablePageHeaderBox1 buttons={buttons} options={options}/>
-          <TablePageHeaderBox2  />
-
+          <TablePageHeaderBox1
+            buttons={buttons}
+            options={options}
+            handleSearch={this.handleSearch}
+          />
+          <TablePageHeaderBox2 filters={filters} />
         </div>
         <div className={styles.tableContent}>
           <GeneralTable

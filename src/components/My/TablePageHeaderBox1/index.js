@@ -11,57 +11,70 @@ const { Search } = Input;
 const { Option } = Select;
 
 export default class TablePageHeaderBox1 extends Component {
-
   static propTypes = {
-    buttons:PropTypes.array,
-    options:PropTypes.array,
-  }
+    buttons: PropTypes.array,
+    options: PropTypes.array,
+  };
 
   static defaultProps = {
-    options:[],
-    buttons:[],
-  }
+    options: [],
+    buttons: [],
+  };
 
   constructor(props) {
     super(props);
     const { options } = this.props;
 
-    const searchOption = options.filter(x => x.default)[0]
+    const searchOption = options.filter(x => x.default)[0];
 
-    this.state = { 
+    this.state = {
       searchOption: {
-        value:'',
-        name:searchOption.value,
-        placeholder:searchOption.placeholder
+        name: searchOption.value,
+        value: '',
+        placeholder: searchOption.placeholder,
       },
     };
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange(value){
+  handleChange(value) {
     const { options } = this.props;
-    const searchOption = options.filter(x => x.value===value)[0]
+    const searchOption = options.filter(x => x.value === value)[0];
 
     this.setState({
-      searchOption
+      searchOption: {
+        name: searchOption.value,
+        value: '',
+        placeholder: searchOption.placeholder,
+      },
     });
   }
 
-  handleSearch(item,e){
+  handleChange2(e) {
+    const { searchOption } = this.state;
+    this.setState({
+      searchOption: {
+        name: searchOption.name,
+        value: e.target.value,
+        placeholder: searchOption.placeholder,
+      },
+    });
+  }
 
-    console.log(item);
+  handleSearch(item, e) {
+    this.props.handleSearch(e);
   }
 
   render() {
-    const { buttons,options,defaultOption } = this.props;
-    const { searchOption} =this.state;
+    const { buttons, options, defaultOption } = this.props;
+    const { searchOption } = this.state;
     return (
       <div className={classNames(styles.box, 'clearfix')}>
         <div className={classNames(styles.boxL, 'floatL')}>
           {buttons.map(
             item =>
               item && (
-                <Button type={item.type} style={{ width: 100, marginRight: 10 }}>
+                <Button key={item.text} type={item.type} style={{ width: 100, marginRight: 10 }}>
                   {item.text}
                 </Button>
               )
@@ -69,15 +82,19 @@ export default class TablePageHeaderBox1 extends Component {
         </div>
         <div className={classNames(styles.boxR, 'floatR')}>
           <InputGroup compact>
-            <Select defaultValue={searchOption.name} onChange={this.handleChange}>
-                {options.map(
+            <Select defaultValue={searchOption.name} onChange={this.handleChange.bind(this)}>
+              {options.map(
                 item =>
                   item && (
-                    <Option value={item.value}>{item.text}</Option>
+                    <Option key={item.value} value={item.value}>
+                      {item.text}
+                    </Option>
                   )
               )}
             </Select>
             <Search
+              value={searchOption.value}
+              onChange={this.handleChange2.bind(this)}
               placeholder={searchOption.placeholder}
               onSearch={this.handleSearch.bind(this)}
               style={{ width: 200 }}
