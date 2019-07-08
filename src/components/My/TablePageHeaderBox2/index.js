@@ -6,6 +6,7 @@ import md5 from 'js-md5';
 import MyDropList from '@/components/My/MyDropList';
 import MySelectBox from '@/components/My/MySelectBox';
 
+import EVENT from './../EventEmit';
 import classNames from 'classnames';
 
 import styles from './index.less';
@@ -44,6 +45,16 @@ export default class TablePageHeaderBox2 extends Component {
     }
   }
 
+  hiddenAllDropList=()=>{
+    const {
+      filters: { filters },
+    } = this.state;
+    filters.map(
+      item =>{
+    EVENT.emit('HideDropList'+item.key)});
+  };
+
+
   render() {
     const {
       filters: { filters },
@@ -61,9 +72,10 @@ export default class TablePageHeaderBox2 extends Component {
                 item && (
                   <MyDropList
                     key={item.key}
-                    id={item.key}
+                    name={item.key}
                     text={item.text}
                     options={item.options}
+                    hiddenAllDropList={this.hiddenAllDropList}
                   />
                 )
             )}

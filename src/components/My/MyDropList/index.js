@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Input, Icon } from 'antd';
+import EVENT from './../EventEmit';
 
 import classNames from 'classnames';
 
-import styles from './index.less';
+import styles from './index.less'; 
 
 export default class MyDropList extends Component {
   static propTypes = {
@@ -26,7 +27,7 @@ export default class MyDropList extends Component {
   constructor(props) {
     super(props);
 
-    const { options } = this.props;
+    const { options,name } = this.props;
 
     this.state = {
       options,
@@ -35,15 +36,26 @@ export default class MyDropList extends Component {
     };
 
     this.handleFilterClick = this.handleFilterClick.bind(this);
+    document.onclick = this.hideDropList.bind(this);
+    EVENT.on("HideDropList"+name,()=>{
+      this.hideDropList();
+    });
   }
 
   componentDidMount() {
-    document.addEventListener('click', () => {
-      this.setState({
-        showFilterDrop: false,
-      });
+  }
+
+  hideDropList(){
+    
+    const {
+      showFilterDrop
+    } = this.state;
+    if(showFilterDrop){
+    this.setState({
+      showFilterDrop: false,
     });
   }
+  };
 
   componentWillReceiveProps(nextProps) {
     const {
@@ -67,6 +79,7 @@ export default class MyDropList extends Component {
      * e.stopPropagation();
      *  阻止原生事件与最外层document上的事件间的冒泡
      */
+    this.props.hiddenAllDropList();
     e.nativeEvent.stopImmediatePropagation();
     const { showFilterDrop } = this.state;
     this.setState({
@@ -91,7 +104,7 @@ export default class MyDropList extends Component {
     } = this.state;
 
     return (
-      <div className={styles.filterdropitem}>
+      <div className={styles.filterdropitem} >
         <div className={styles.filterdrop}>
           <div>
             <span className={styles.filtertitle} onClick={this.handleFilterClick}>
