@@ -6,18 +6,20 @@ import md5 from 'js-md5';
 import MyDropList from '@/components/My/MyDropList';
 import MySelectBox from '@/components/My/MySelectBox';
 
-import EVENT from './../EventEmit';
 import classNames from 'classnames';
+import EVENT from './../EventEmit';
 
 import styles from './index.less';
 
 export default class TablePageHeaderBox2 extends Component {
   static propTypes = {
     filters: PropTypes.any,
+    maxFilterNum: PropTypes.number,
   };
 
   static defaultProps = {
     filters: {},
+    maxFilterNum: 5,
   };
 
   constructor(props) {
@@ -25,6 +27,7 @@ export default class TablePageHeaderBox2 extends Component {
     const { filters } = this.props;
     this.state = {
       filters,
+      showMore: false,
     };
   }
 
@@ -45,45 +48,107 @@ export default class TablePageHeaderBox2 extends Component {
     }
   }
 
-  hiddenAllDropList=()=>{
+  hiddenAllDropList = () => {
+    EVENT.emit('HideDropList');
+  };
+
+  handleChangeSelect = (ops, key) => {
     const {
       filters: { filters },
     } = this.state;
-    filters.map(
-      item =>{
-    EVENT.emit('HideDropList'+item.key)});
+
+    filters.forEach(item => {
+      if (item.key === key) {
+        item.options = ops;
+      }
+    });
+
+    this.setState({
+      filters: {
+        filters,
+      },
+    });
   };
 
+  handleToggleFilter = () => {
+    const { showMore } = this.state;
+    this.setState({
+      showMore: !showMore,
+    });
+  };
 
-  render() {
+  handleClearSelect = () => {
     const {
       filters: { filters },
+      showMore,
+    } = this.state;
+
+    filters.forEach(item => {
+      item.options.options.forEach(a => {
+        a.checked = false;
+      });
+    });
+    this.setState({
+      filters: {
+        filters,
+      },
+    });
+  };
+
+  render() {
+    const { maxFilterNum } = this.props;
+    const {
+      filters: { filters },
+      showMore,
     } = this.state;
 
     return (
       <div className={styles.box}>
         <div style={{ width: '100%' }}>
-          <a className={classNames(styles.filterlabel, 'floatR')}>
-            更多筛选 <Icon type="down" />
-          </a>
+          {filters.length > maxFilterNum && (
+            <a
+              className={classNames(styles.filterlabel, 'floatR')}
+              onClick={this.handleToggleFilter}
+            >
+              {showMore ? '收齐更多' : '更多筛选'} <Icon type={showMore ? 'up' : 'down'} />
+            </a>
+          )}
           <div className={styles.droplistbox}>
-            {filters.map(
-              item =>
-                item && (
-                  <MyDropList
-                    key={item.key}
-                    name={item.key}
-                    text={item.text}
-                    options={item.options}
-                    hiddenAllDropList={this.hiddenAllDropList}
-                  />
-                )
-            )}
+            {filters.forEach((item, index) => (
+              <MyDropList
+                key={item.key}
+                name={item.key}
+                text={item.text}
+                type={item.type}
+                options={item.options}
+                hiddenAllDropList={this.hiddenAllDropList}
+                onChange={this.handleChangeSelect}
+                style={{
+                  display: index < maxFilterNum || showMore ? '' : 'none',
+                }}
+              />
+            ))}
           </div>
           <div>
-            <a className="floatR">清空筛选</a>
+            {filters.some(item => item.options.options.some(a => a.checked)) && (
+              <a className="floatR" onClick={this.handleClearSelect}>
+                清空筛选
+              </a>
+            )}
             <div className={styles.selectedbox}>
-              <MySelectBox />
+              {filters.forEach(
+                item =>
+                  item &&
+                  item.options.options.some(a => a.checked) && (
+                    <MySelectBox
+                      name={item.key}
+                      text={item.text}
+                      key={item.key}
+                      options={item.options}
+                      onChange={this.handleChangeSelect}
+                    />
+                  )
+              )}
             </div>
           </div>
         </div>

@@ -56,28 +56,50 @@ class UserLayout extends Component {
       <DocumentTitle title={getPageTitle(pathname, breadcrumbNameMap)}>
         <div className={styles.container}>
           <div className={styles.lang}>
-            <span style={{
-              color:'#333'
-            }}>
-              <a title="help" target="_self" href="" style={{
-              color:'#333',
-              padding: '0 8px'
-            }}>申请使用</a>|
-              <a title="privacy" target="_self" href=""style={{
-              color:'#333',
-              padding: '0 8px'
-            }}>移动端</a>|
-              <a title="terms" target="_self" href=""style={{
-              color:'#333',
-              padding: '0 20px 0 8px'
-            }}>官网</a>
+            <span
+              style={{
+                color: '#333',
+              }}
+            >
+              <a
+                title="help"
+                target="_self"
+                href=""
+                style={{
+                  color: '#333',
+                  padding: '0 8px',
+                }}
+              >
+                申请使用
+              </a>
+              |
+              <a
+                title="privacy"
+                target="_self"
+                href=""
+                style={{
+                  color: '#333',
+                  padding: '0 8px',
+                }}
+              >
+                移动端
+              </a>
+              |
+              <a
+                title="terms"
+                target="_self"
+                href=""
+                style={{
+                  color: '#333',
+                  padding: '0 20px 0 8px',
+                }}
+              >
+                官网
+              </a>
             </span>
-              <SelectLang />
+            <SelectLang />
           </div>
-          <div className={styles.content}>
-            
-            {children}
-          </div>
+          <div className={styles.content}>{children}</div>
           <GlobalFooter links={links} copyright={copyright} />
         </div>
       </DocumentTitle>

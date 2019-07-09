@@ -1,3 +1,3 @@
-global.constants={
-    msgTimeOut:undefined,
-}
+global.constants = {
+  msgTimeOut: undefined,
+};

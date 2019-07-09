@@ -22,6 +22,7 @@
     "lint:fix": "eslint --fix --ext .js src  tests && stylelint --fix 'src/**/*.less' --syntax less",
     "lint:prettier": "check-prettier lint",
     "lint:style": "stylelint 'src/**/*.less' --syntax less",
+    "lint:style:fix": "stylelint --fix 'src/**/*.less' --syntax less",
     "prettier": "node ./scripts/prettier.js",
     "site": "umi build && npm run functions:build",
     "start": "cross-env MOCK=none umi dev",
@@ -38,7 +39,7 @@
     }
   },
   "lint-staged": {
-    "**/*.less": "stylelint --syntax less",
+    "**/*.less": "stylelint --fix --syntax less",
     "**/*.{js,jsx}": "npm run lint-staged:js",
     "**/*.{js,ts,tsx,json,jsx,less}": [
       "node ./scripts/lint-prettier.js",
@@ -58,6 +59,7 @@
     "classnames": "^2.2.6",
     "dva": "^2.4.1",
     "enquire-js": "^0.2.1",
+    "eventemitter3": "^4.0.0",
     "express": "^4.16.4",
     "gg-editor": "^2.0.2",
     "js-md5": "^0.7.3",

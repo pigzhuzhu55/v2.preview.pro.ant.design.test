@@ -5,7 +5,7 @@
 import { extend } from 'umi-request';
 import { notification } from 'antd';
 import router from 'umi/router';
-import './globalData'
+import './globalData';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -33,13 +33,12 @@ const errorHandler = error => {
   const errortext = codeMessage[response.status] || response.statusText;
   const { status, url } = response;
 
-  //简单办法防止一个页面多个请求导致同一个错误弹多次
-  if(global.constants.msgTimeOut!=undefined)
-    return;
-  global.constants.msgTimeOut =setTimeout(()=>{
-    clearTimeout(global.constants.msgTimeOut); 
-    global.constants.msgTimeOut=undefined;
-  },2000); 
+  // 简单办法防止一个页面多个请求导致同一个错误弹多次
+  if (global.constants.msgTimeOut !== undefined) return;
+  global.constants.msgTimeOut = setTimeout(() => {
+    clearTimeout(global.constants.msgTimeOut);
+    global.constants.msgTimeOut = undefined;
+  }, 2000);
 
   if (status === 401) {
     notification.error({
@@ -76,7 +75,7 @@ const errorHandler = error => {
     router.push('/exception/404');
     return;
   }
-  
+
   notification.error({
     message: `请求错误 ${status}: ${url}`,
     description: errortext,
@@ -90,7 +89,6 @@ const errorHandler = error => {
 //   errorHandlerBegin(error);
 //   errorHandlerEnd();
 // }
-
 
 /**
  * 配置request请求时的默认参数

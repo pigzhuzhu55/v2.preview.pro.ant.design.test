@@ -7,15 +7,53 @@ import classNames from 'classnames';
 import styles from './index.less';
 
 export default class MySelectBox extends Component {
-  handleCloseTag() {}
+  static propTypes = {
+    name: PropTypes.string,
+    text: PropTypes.string,
+    options: PropTypes.any,
+  };
+
+  static defaultProps = {
+    name: '',
+    text: '',
+    options: {},
+  };
+
+  constructor(props) {
+    super(props);
+
+    const { options } = this.props;
+
+    this.state = {
+      options,
+    };
+  }
+
+  handleCloseTag(item, e) {
+    const { options } = this.state;
+    const { name } = this.props;
+    item.checked = false;
+    this.props.onChange(options, name);
+  }
 
   render() {
+    const { name, text } = this.props;
+    const {
+      options: { options },
+    } = this.state;
+
     return (
-      <div className={styles.selecteditem}>
-        <span>性质：</span>
-        <Tag closable onClose={this.handleCloseTag.bind(this)}>
-          直营
-        </Tag>
+      <div key={name} className={styles.selecteditem}>
+        <span className={styles.selectedlabel}>{text}：</span>
+        {options.map(
+          item =>
+            item &&
+            item.checked && (
+              <Tag key={item.key} closable onClose={this.handleCloseTag.bind(this, item)}>
+                {item.title}
+              </Tag>
+            )
+        )}
       </div>
     );
   }

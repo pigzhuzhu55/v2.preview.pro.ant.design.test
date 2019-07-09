@@ -170,14 +170,21 @@ class OrgList extends PureComponent {
         {
           text: '性质',
           key: 'orgType',
-          parent: '',
-          children: '',
           options: {
             version: 0,
             options: [{ title: '直营', key: '0' }, { title: '加盟', key: '1' }],
           },
         },
+        {
+          text: '是否删除',
+          key: 'deleteFlag',
+          options: {
+            version: 0,
+            options: [{ title: '否', key: '0' }, { title: '是', key: '1' }],
+          },
+        },
         { text: '省份', key: 'province', parent: '', children: '', options: proviceOption },
+        { text: '合同过期时间', key: 'expireTime', type: 'DatePicker', options: proviceOption },
       ],
     };
 
@@ -194,7 +201,7 @@ class OrgList extends PureComponent {
             options={options}
             handleSearch={this.handleSearch}
           />
-          <TablePageHeaderBox2 filters={filters} />
+          <TablePageHeaderBox2 filters={filters} maxFilterNum={2} />
         </div>
         <div className={styles.tableContent}>
           <GeneralTable
