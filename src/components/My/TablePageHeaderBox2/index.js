@@ -114,7 +114,7 @@ export default class TablePageHeaderBox2 extends Component {
             </a>
           )}
           <div className={styles.droplistbox}>
-            {filters.forEach((item, index) => (
+            {filters.map((item, index) => (
               <MyDropList
                 key={item.key}
                 name={item.key}
@@ -136,7 +136,7 @@ export default class TablePageHeaderBox2 extends Component {
               </a>
             )}
             <div className={styles.selectedbox}>
-              {filters.forEach(
+              {filters.map(
                 item =>
                   item &&
                   item.options.options.some(a => a.checked) && (
