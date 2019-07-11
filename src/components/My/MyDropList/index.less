@@ -14,10 +14,12 @@
   font-size: 14px;
   word-break: keep-all;
   cursor: pointer;
-}
-.splitdash {
-  margin-left: 5px;
-  color: #d4dfe5;
+  svg {
+    -webkit-transition: -webkit-transform 0.3s;
+    transition: -webkit-transform 0.3s;
+    transition: transform 0.3s;
+    transition: transform 0.3s, -webkit-transform 0.3s;
+  }
 }
 
 .poperwraper {

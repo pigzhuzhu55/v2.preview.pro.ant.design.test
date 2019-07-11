@@ -183,8 +183,16 @@ class OrgList extends PureComponent {
             options: [{ title: '否', key: '0' }, { title: '是', key: '1' }],
           },
         },
+        {
+          text: '合同过期时间',
+          key: 'expireTime',
+          type: 'DatePicker',
+          options: {
+            version: 0,
+            options: '',
+          },
+        },
         { text: '省份', key: 'province', parent: '', children: '', options: proviceOption },
-        { text: '合同过期时间', key: 'expireTime', type: 'DatePicker', options: proviceOption },
       ],
     };
 
@@ -201,7 +209,7 @@ class OrgList extends PureComponent {
             options={options}
             handleSearch={this.handleSearch}
           />
-          <TablePageHeaderBox2 filters={filters} maxFilterNum={2} />
+          <TablePageHeaderBox2 filters={filters} maxFilterNum={5} />
         </div>
         <div className={styles.tableContent}>
           <GeneralTable

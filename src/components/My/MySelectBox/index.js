@@ -32,7 +32,13 @@ export default class MySelectBox extends Component {
   handleCloseTag(item, e) {
     const { options } = this.state;
     const { name } = this.props;
-    item.checked = false;
+
+    if (Array.isArray(options.options)) {
+      item.checked = false;
+    } else {
+      options.options = '';
+    }
+
     this.props.onChange(options, name);
   }
 
@@ -45,15 +51,21 @@ export default class MySelectBox extends Component {
     return (
       <div key={name} className={styles.selecteditem}>
         <span className={styles.selectedlabel}>{text}：</span>
-        {options.map(
-          item =>
-            item &&
-            item.checked && (
-              <Tag key={item.key} closable onClose={this.handleCloseTag.bind(this, item)}>
-                {item.title}
-              </Tag>
+        {Array.isArray(options)
+          ? options.map(
+              item =>
+                item &&
+                item.checked && (
+                  <Tag key={item.key} closable onClose={this.handleCloseTag.bind(this, item)}>
+                    {item.title}
+                  </Tag>
+                )
             )
-        )}
+          : options !== '' && (
+              <Tag closable onClose={this.handleCloseTag.bind(this, options)}>
+                {options}
+              </Tag>
+            )}
       </div>
     );
   }

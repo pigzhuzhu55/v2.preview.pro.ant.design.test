@@ -42,6 +42,7 @@ module.exports = {
     'react/jsx-no-bind': 0,
     'react/no-unused-prop-types': 0,
     'class-methods-use-this': 0,
+    'react/jsx-indent': 0,
   },
   settings: {
     polyfills: ['fetch', 'promises', 'url', 'object-assign'],

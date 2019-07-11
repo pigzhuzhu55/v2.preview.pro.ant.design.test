@@ -84,9 +84,13 @@ export default class TablePageHeaderBox2 extends Component {
     } = this.state;
 
     filters.forEach(item => {
-      item.options.options.forEach(a => {
-        a.checked = false;
-      });
+      if (Array.isArray(item.options.options)) {
+        item.options.options.forEach(a => {
+          a.checked = false;
+        });
+      } else if (typeof item.options.options === 'string') {
+        item.options.options = '';
+      }
     });
     this.setState({
       filters: {
@@ -120,6 +124,7 @@ export default class TablePageHeaderBox2 extends Component {
                 name={item.key}
                 text={item.text}
                 type={item.type}
+                showItemSeparator={index < filters.length - 1}
                 options={item.options}
                 hiddenAllDropList={this.hiddenAllDropList}
                 onChange={this.handleChangeSelect}
@@ -130,7 +135,12 @@ export default class TablePageHeaderBox2 extends Component {
             ))}
           </div>
           <div>
-            {filters.some(item => item.options.options.some(a => a.checked)) && (
+            {filters.some(
+              item =>
+                (Array.isArray(item.options.options) &&
+                  item.options.options.some(a => a.checked)) ||
+                (typeof item.options.options === 'string' && item.options.options !== '')
+            ) && (
               <a className="floatR" onClick={this.handleClearSelect}>
                 清空筛选
               </a>
@@ -138,8 +148,9 @@ export default class TablePageHeaderBox2 extends Component {
             <div className={styles.selectedbox}>
               {filters.map(
                 item =>
-                  item &&
-                  item.options.options.some(a => a.checked) && (
+                  ((Array.isArray(item.options.options) &&
+                    item.options.options.some(a => a.checked)) ||
+                    (typeof item.options.options === 'string' && item.options.options !== '')) && (
                     <MySelectBox
                       name={item.key}
                       text={item.text}

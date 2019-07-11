@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { Input, Icon, DatePicker } from 'antd';
 import classNames from 'classnames';
 import EVENT from './../EventEmit';
 
 import styles from './index.less';
+
+const dateFormat = 'YYYY-MM-DD';
 
 export default class MyDropList extends Component {
   static propTypes = {
@@ -13,6 +16,7 @@ export default class MyDropList extends Component {
     name: PropTypes.string,
     text: PropTypes.string,
     type: PropTypes.string,
+    showItemSeparator: PropTypes.bool,
     options: PropTypes.any,
   };
 
@@ -21,6 +25,7 @@ export default class MyDropList extends Component {
     multiple: false,
     name: '',
     text: '',
+    showItemSeparator: false,
     type: 'Select',
     options: {},
   };
@@ -88,21 +93,24 @@ export default class MyDropList extends Component {
     });
   }
 
-  handleSelectClick(item, e) {
-    e.nativeEvent.stopImmediatePropagation();
+  handleSelectClick(item, value, e) {
     const { options } = this.state;
-    const { multiple, name } = this.props;
+    const { multiple, name, type } = this.props;
 
-    const { checked } = item;
+    if (type === 'Select') {
+      e.nativeEvent.stopImmediatePropagation();
+      const { checked } = item;
 
-    if (!multiple) {
-      options.options.forEach(a => {
-        a.checked = false;
-      });
+      if (!multiple) {
+        options.options.forEach(a => {
+          a.checked = false;
+        });
+      }
+
+      item.checked = !checked;
+    } else {
+      options.options = value.join(' ~ ');
     }
-
-    item.checked = !checked;
-
     this.props.onChange(options, name);
   }
 
@@ -115,22 +123,24 @@ export default class MyDropList extends Component {
 
     return (
       <div className={styles.filterdropitem} style={style}>
-        <div className={styles.filterdrop}>
-          <div>
-            <span className={styles.filtertitle} onClick={this.handleFilterClick}>
-              {text}
-              <Icon type={showFilterDrop ? 'up' : 'down'} />
-              <span className={styles.splitdash}>|</span>
-            </span>
-          </div>
-          <div
-            className={styles.poperwraper}
-            style={{
-              display: showFilterDrop ? '' : 'none',
-            }}
-          >
-            <div className={styles.poper}>
-              {type === 'Select' && (
+        {type === 'Select' && (
+          <div className={styles.filterdrop}>
+            <div>
+              <span className={styles.filtertitle} onClick={this.handleFilterClick}>
+                {text}&nbsp;
+                <Icon type={showFilterDrop ? 'up' : 'down'} />
+                {this.props.showItemSeparator && (
+                  <span style={{ marginLeft: 5, color: '#d4dfe5' }}>|</span>
+                )}
+              </span>
+            </div>
+            <div
+              className={styles.poperwraper}
+              style={{
+                display: showFilterDrop ? '' : 'none',
+              }}
+            >
+              <div className={styles.poper}>
                 <div className={styles.filterscrollbox}>
                   {options.map(
                     item =>
@@ -143,7 +153,7 @@ export default class MyDropList extends Component {
                               : classNames(styles.filteritem)
                           }
                           value={item.value}
-                          onClick={this.handleSelectClick.bind(this, item)}
+                          onClick={this.handleSelectClick.bind(this, item, null)}
                         >
                           {item.title}
                           {item.checked && <Icon type="check" />}
@@ -151,13 +161,33 @@ export default class MyDropList extends Component {
                       )
                   )}
                 </div>
-              )}
-              {type === 'DatePicker' && (
-                <DatePicker.RangePicker className={styles.filterscrollbox} size="small" />
-              )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
+
+        {type === 'DatePicker' && (
+          <div className={styles.filterdrop}>
+            <div>
+              <DatePicker.RangePicker
+                onChange={this.handleSelectClick.bind(this)}
+                value={
+                  options === ''
+                    ? null
+                    : [
+                        moment(options.split(' ~ ')[0], dateFormat),
+                        moment(options.split(' ~ ')[1], dateFormat),
+                      ]
+                }
+                title={text}
+                showItemSeparator={this.props.showItemSeparator}
+                className={styles.filtertitle}
+                align={{ offset: [0, 27] }}
+                type="Select"
+              />
+            </div>
+          </div>
+        )}
       </div>
     );
   }
