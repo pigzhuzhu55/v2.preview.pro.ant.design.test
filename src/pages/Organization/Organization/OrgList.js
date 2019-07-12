@@ -8,6 +8,8 @@ import TablePageHeaderBox2 from '@/components/My/TablePageHeaderBox2';
 
 import { FormattedMessage } from 'umi-plugin-react/locale';
 
+import { getProvinceList, getCityList, getCountyList } from '@/services/api';
+
 import styles from './OrgList.less';
 
 const FormItem = Form.Item;
@@ -27,12 +29,6 @@ class OrgList extends PureComponent {
     selectedRows: [],
     expandForm: false,
     formValues: {},
-
-    version: 0,
-    proviceOption: {
-      version: 0,
-      options: [],
-    },
   };
 
   columns = [
@@ -81,24 +77,6 @@ class OrgList extends PureComponent {
     dispatch({
       type: 'orgList/listLoad',
     });
-
-    dispatch({
-      type: 'orgList/listProvince',
-      payload: {},
-      callback: response => {
-        const { version, proviceOption } = this.state;
-        const version2 = version + 1;
-        const version3 = proviceOption.version + 1;
-        const options = response.data;
-        this.setState({
-          version: version2,
-          proviceOption: {
-            version: version3,
-            options,
-          },
-        });
-      },
-    });
   }
 
   handleSelectRows = rows => {
@@ -110,7 +88,7 @@ class OrgList extends PureComponent {
   handleSearch = e => {
     e.preventDefault();
 
-    const { dispatch, form } = this.props;
+    const { dispatch } = this.props;
 
     const values = {};
 
@@ -136,23 +114,19 @@ class OrgList extends PureComponent {
     });
   };
 
-  handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
-    });
-    dispatch({
-      type: 'orgList/listLoad',
-      payload: {},
-    });
-  };
-
   toggleForm = () => {
     const { expandForm } = this.state;
     this.setState({
       expandForm: !expandForm,
     });
+  };
+
+  queryProvinceData = () => {
+    return getProvinceList();
+  };
+
+  queryCityData = provinceId => {
+    return getCityList({ provinceId });
   };
 
   render() {
@@ -162,58 +136,36 @@ class OrgList extends PureComponent {
       { text: '电话号码', value: 'telephone', placeholder: '请输入电话号码' },
     ];
 
-    const { proviceOption, expandForm, selectedRows, version } = this.state;
+    const { expandForm, selectedRows } = this.state;
 
-    const filters = {
-      version,
-      filters: [
-        {
-          text: '性质',
-          key: 'orgType',
-          options: {
-            version: 0,
-            options: [{ title: '直营', key: '0' }, { title: '加盟', key: '1' }],
-          },
-        },
-        {
-          text: '是否删除',
-          key: 'deleteFlag',
-          options: {
-            version: 0,
-            options: [{ title: '否', key: '0' }, { title: '是', key: '1' }],
-          },
-        },
-        {
-          text: '合同过期时间',
-          key: 'expireTime',
-          type: 'DatePicker',
-          options: {
-            version: 0,
-            options: '',
-          },
-        },
-        { text: '省', key: 'province', hasChildren: true, options: proviceOption },
-        {
-          text: '市',
-          key: 'city',
-          parent: 'province',
-          hasChildren: true,
-          options: {
-            version: 0,
-            options: [],
-          },
-        },
-        {
-          text: '县',
-          key: 'county',
-          parent: 'city',
-          options: {
-            version: 0,
-            options: [],
-          },
-        },
-      ],
-    };
+    const filters = [
+      {
+        text: '性质',
+        key: 'orgType',
+        value: '',
+        options: [{ title: '直营', key: '0' }, { title: '加盟', key: '1' }],
+      },
+      {
+        text: '合同过期时间',
+        key: 'expireTime',
+        value: '',
+        type: 'DatePicker',
+      },
+      {
+        text: '省',
+        key: 'province',
+        value: '',
+        child: 'city',
+        loadData: this.queryProvinceData,
+      },
+      {
+        text: '市',
+        key: 'city',
+        value: '',
+        parent: 'province',
+        onLoadData: provinceId => this.queryCityData(provinceId),
+      },
+    ];
 
     const {
       orgList: { listData },

@@ -15,8 +15,12 @@ export default class MyDropList extends Component {
     name: PropTypes.string,
     text: PropTypes.string,
     type: PropTypes.string,
+    value: PropTypes.string,
     showItemSeparator: PropTypes.bool,
-    options: PropTypes.any,
+    options: PropTypes.array,
+    loadData: PropTypes.func,
+    child: PropTypes.string,
+    parent: PropTypes.string,
   };
 
   static defaultProps = {
@@ -24,37 +28,42 @@ export default class MyDropList extends Component {
     multiple: false,
     name: '',
     text: '',
+    value: '',
     showItemSeparator: false,
     type: 'Select',
-    options: {},
+    options: [],
+    loadData: null,
+    child: '',
+    parent: '',
   };
 
   constructor(props) {
     super(props);
 
-    const { options } = this.props;
+    const { options, value } = this.props;
 
     this.state = {
       options,
+      value,
       showFilterDrop: false,
       activeVals: {},
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    const {
-      options: { version: version2, options },
-    } = nextProps;
-    const {
-      options: { version },
-    } = this.props;
-    if (version !== version2) {
-      this.setState({
-        options: {
-          version: version2,
-          options,
-        },
-      });
+  componentDidMount() {
+    const { options, value, type, loadData, child, parent } = this.props;
+
+    if (type === 'Select') {
+      // 说明是第一个下拉，直接加载数据
+      if (child !== '' && parent === '') {
+        loadData().then(response => {
+          if (response.code === 0) {
+            this.setState({
+              options: response.data,
+            });
+          }
+        });
+      }
     }
   }
 
@@ -80,33 +89,25 @@ export default class MyDropList extends Component {
     });
   }
 
-  handleSelectClick(e, item, value) {
-    const { options } = this.state;
+  handleSelectClick(e, value) {
     const { multiple, name, type } = this.props;
 
     if (type === 'Select') {
       e.nativeEvent.stopImmediatePropagation();
-      const { checked } = item;
-
-      if (!multiple) {
-        options.options.forEach(a => {
-          a.checked = false;
-        });
-      }
-
-      item.checked = !checked;
-    } else {
-      options.options = value.join(' ~ ');
     }
-    this.props.onChange(options, name);
+
+    if (!multiple) {
+      this.setState({
+        value,
+      });
+    }
+
+    this.props.onChange(this.props, value);
   }
 
   render() {
     const { name, text, style, type } = this.props;
-    const {
-      showFilterDrop,
-      options: { options },
-    } = this.state;
+    const { showFilterDrop, options, value } = this.state;
 
     return (
       <div className={styles.filterdropitem} style={style}>
@@ -136,15 +137,15 @@ export default class MyDropList extends Component {
                         <li
                           key={item.key}
                           className={
-                            item.checked
+                            item.key === value
                               ? classNames(styles.selected, styles.filteritem)
                               : classNames(styles.filteritem)
                           }
-                          value={item.value}
-                          onClick={e => this.handleSelectClick(e, item)}
+                          value={item.key}
+                          onClick={e => this.handleSelectClick(e, item.key)}
                         >
                           {item.title}
-                          {item.checked && <Icon type="check" />}
+                          {item.key === value && <Icon type="check" />}
                         </li>
                       )
                   )}
@@ -158,13 +159,13 @@ export default class MyDropList extends Component {
           <div className={styles.filterdrop}>
             <div>
               <DatePicker.RangePicker
-                onChange={(ment, val, e) => this.handleSelectClick(e, ment, val)}
+                onChange={(ment, val, e) => this.handleSelectClick(e, val)}
                 value={
-                  options === ''
+                  value === ''
                     ? null
                     : [
-                        moment(options.split(' ~ ')[0], dateFormat),
-                        moment(options.split(' ~ ')[1], dateFormat),
+                        moment(value.split(' ~ ')[0], dateFormat),
+                        moment(value.split(' ~ ')[1], dateFormat),
                       ]
                 }
                 title={text}

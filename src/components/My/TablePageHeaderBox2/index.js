@@ -12,14 +12,14 @@ import styles from './index.less';
 
 export default class TablePageHeaderBox2 extends Component {
   static propTypes = {
-    filters: PropTypes.any,
+    filters: PropTypes.array,
     maxFilterNum: PropTypes.number,
     hasChildren: PropTypes.bool,
     parent: PropTypes.string,
   };
 
   static defaultProps = {
-    filters: {},
+    filters: [],
     maxFilterNum: 5,
     hasChildren: false,
     parent: '',
@@ -34,38 +34,34 @@ export default class TablePageHeaderBox2 extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    const {
-      filters: { version: version2, filters },
-    } = nextProps;
-    const {
-      filters: { version },
-    } = this.props;
-    if (version !== version2) {
-      this.setState({
-        filters: {
-          version: version2,
-          filters,
-        },
-      });
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   const {
+  //     filters: { version: version2, filters },
+  //   } = nextProps;
+  //   const {
+  //     filters: { version },
+  //   } = this.props;
+  //   if (version !== version2) {
+  //     this.setState({
+  //       filters: {
+  //         version: version2,
+  //         filters,
+  //       },
+  //     });
+  //   }
+  // }
 
-  handleChangeSelect(ops, key) {
-    const {
-      filters: { filters },
-    } = this.state;
+  handleChangeSelect(childPros, value) {
+    const { filters } = this.state;
 
     filters.forEach(item => {
-      if (item.key === key) {
-        item.options = ops;
+      if (item.key === childPros.name) {
+        item.value = value.toString();
       }
     });
 
     this.setState({
-      filters: {
-        filters,
-      },
+      filters,
     });
   }
 
@@ -100,10 +96,7 @@ export default class TablePageHeaderBox2 extends Component {
 
   render() {
     const { maxFilterNum } = this.props;
-    const {
-      filters: { filters },
-      showMore,
-    } = this.state;
+    const { filters, showMore } = this.state;
 
     return (
       <div className={styles.box}>
@@ -119,12 +112,9 @@ export default class TablePageHeaderBox2 extends Component {
           <div className={styles.droplistbox}>
             {filters.map((item, index) => (
               <MyDropList
-                key={item.key}
                 name={item.key}
-                text={item.text}
-                type={item.type}
+                {...item}
                 showItemSeparator={index !== 0}
-                options={item.options}
                 onChange={(ops, key) => this.handleChangeSelect(ops, key)}
                 style={{
                   display: index < maxFilterNum || showMore ? '' : 'none',
@@ -133,12 +123,7 @@ export default class TablePageHeaderBox2 extends Component {
             ))}
           </div>
           <div>
-            {filters.some(
-              item =>
-                (Array.isArray(item.options.options) &&
-                  item.options.options.some(a => a.checked)) ||
-                (typeof item.options.options === 'string' && item.options.options !== '')
-            ) && (
+            {filters.some(item => item.value !== '') && (
               <a className="floatR" onClick={() => this.handleClearSelect()}>
                 清空筛选
               </a>
@@ -146,14 +131,10 @@ export default class TablePageHeaderBox2 extends Component {
             <div className={styles.selectedbox}>
               {filters.map(
                 item =>
-                  ((Array.isArray(item.options.options) &&
-                    item.options.options.some(a => a.checked)) ||
-                    (typeof item.options.options === 'string' && item.options.options !== '')) && (
+                  item.value !== '' && (
                     <MySelectBox
                       name={item.key}
-                      text={item.text}
-                      key={item.key}
-                      options={item.options}
+                      {...item}
                       onChange={(ops, key) => this.handleChangeSelect(ops, key)}
                     />
                   )
