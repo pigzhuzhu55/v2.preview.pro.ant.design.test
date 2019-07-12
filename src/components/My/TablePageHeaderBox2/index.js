@@ -7,7 +7,6 @@ import MyDropList from '@/components/My/MyDropList';
 import MySelectBox from '@/components/My/MySelectBox';
 
 import classNames from 'classnames';
-import EVENT from './../EventEmit';
 
 import styles from './index.less';
 
@@ -15,11 +14,15 @@ export default class TablePageHeaderBox2 extends Component {
   static propTypes = {
     filters: PropTypes.any,
     maxFilterNum: PropTypes.number,
+    hasChildren: PropTypes.bool,
+    parent: PropTypes.string,
   };
 
   static defaultProps = {
     filters: {},
     maxFilterNum: 5,
+    hasChildren: false,
+    parent: '',
   };
 
   constructor(props) {
@@ -48,11 +51,7 @@ export default class TablePageHeaderBox2 extends Component {
     }
   }
 
-  hiddenAllDropList = () => {
-    EVENT.emit('HideDropList');
-  };
-
-  handleChangeSelect = (ops, key) => {
+  handleChangeSelect(ops, key) {
     const {
       filters: { filters },
     } = this.state;
@@ -68,16 +67,16 @@ export default class TablePageHeaderBox2 extends Component {
         filters,
       },
     });
-  };
+  }
 
-  handleToggleFilter = () => {
+  handleToggleFilter() {
     const { showMore } = this.state;
     this.setState({
       showMore: !showMore,
     });
-  };
+  }
 
-  handleClearSelect = () => {
+  handleClearSelect() {
     const {
       filters: { filters },
       showMore,
@@ -97,7 +96,7 @@ export default class TablePageHeaderBox2 extends Component {
         filters,
       },
     });
-  };
+  }
 
   render() {
     const { maxFilterNum } = this.props;
@@ -112,7 +111,7 @@ export default class TablePageHeaderBox2 extends Component {
           {filters.length > maxFilterNum && (
             <a
               className={classNames(styles.filterlabel, 'floatR')}
-              onClick={this.handleToggleFilter}
+              onClick={() => this.handleToggleFilter()}
             >
               {showMore ? '收齐更多' : '更多筛选'} <Icon type={showMore ? 'up' : 'down'} />
             </a>
@@ -124,10 +123,9 @@ export default class TablePageHeaderBox2 extends Component {
                 name={item.key}
                 text={item.text}
                 type={item.type}
-                showItemSeparator={index < filters.length - 1}
+                showItemSeparator={index !== 0}
                 options={item.options}
-                hiddenAllDropList={this.hiddenAllDropList}
-                onChange={this.handleChangeSelect}
+                onChange={(ops, key) => this.handleChangeSelect(ops, key)}
                 style={{
                   display: index < maxFilterNum || showMore ? '' : 'none',
                 }}
@@ -141,7 +139,7 @@ export default class TablePageHeaderBox2 extends Component {
                   item.options.options.some(a => a.checked)) ||
                 (typeof item.options.options === 'string' && item.options.options !== '')
             ) && (
-              <a className="floatR" onClick={this.handleClearSelect}>
+              <a className="floatR" onClick={() => this.handleClearSelect()}>
                 清空筛选
               </a>
             )}
@@ -156,7 +154,7 @@ export default class TablePageHeaderBox2 extends Component {
                       text={item.text}
                       key={item.key}
                       options={item.options}
-                      onChange={this.handleChangeSelect}
+                      onChange={(ops, key) => this.handleChangeSelect(ops, key)}
                     />
                   )
               )}

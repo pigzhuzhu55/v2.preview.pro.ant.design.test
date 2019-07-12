@@ -1,4 +1,10 @@
-import { getOrganizationList, removeOrganization, getProvinceList } from '@/services/api';
+import {
+  getOrganizationList,
+  removeOrganization,
+  getProvinceList,
+  getCityList,
+  getCountyList,
+} from '@/services/api';
 
 export default {
   namespace: 'orgList',
@@ -25,6 +31,14 @@ export default {
     },
     *listProvince({ payload, callback }, { call }) {
       const response = yield call(getProvinceList, payload);
+      if (callback) callback(response);
+    },
+    *listCity({ payload, callback }, { call }) {
+      const response = yield call(getCityList, payload);
+      if (callback) callback(response);
+    },
+    *listCounty({ payload, callback }, { call }) {
+      const response = yield call(getCountyList, payload);
       if (callback) callback(response);
     },
   },

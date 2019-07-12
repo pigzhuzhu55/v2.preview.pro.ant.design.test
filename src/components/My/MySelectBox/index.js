@@ -56,13 +56,13 @@ export default class MySelectBox extends Component {
               item =>
                 item &&
                 item.checked && (
-                  <Tag key={item.key} closable onClose={this.handleCloseTag.bind(this, item)}>
+                  <Tag key={item.key} closable onClose={() => this.handleCloseTag(item)}>
                     {item.title}
                   </Tag>
                 )
             )
           : options !== '' && (
-              <Tag closable onClose={this.handleCloseTag.bind(this, options)}>
+              <Tag closable onClose={() => this.handleCloseTag(options)}>
                 {options}
               </Tag>
             )}

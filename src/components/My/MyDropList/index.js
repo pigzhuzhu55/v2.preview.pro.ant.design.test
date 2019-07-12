@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Input, Icon, DatePicker } from 'antd';
 import classNames from 'classnames';
-import EVENT from './../EventEmit';
 
 import styles from './index.less';
 
@@ -42,14 +41,6 @@ export default class MyDropList extends Component {
     };
   }
 
-  componentDidMount() {
-    this.handleFilterClick = this.handleFilterClick.bind(this);
-    document.addEventListener('click', this.hideDropList);
-    EVENT.on('HideDropList', () => {
-      this.hideDropList();
-    });
-  }
-
   componentWillReceiveProps(nextProps) {
     const {
       options: { version: version2, options },
@@ -67,21 +58,17 @@ export default class MyDropList extends Component {
     }
   }
 
-  componentWillUnmount() {
-    document.removeEventListener('click', this.hideDropList);
-  }
-
-  hideDropList = () => {
+  hideDropList() {
     const { showFilterDrop } = this.state;
     if (showFilterDrop) {
       this.setState({
         showFilterDrop: false,
       });
     }
-  };
+  }
 
   handleFilterClick(e) {
-    this.props.hiddenAllDropList();
+    // this.props.hiddenAllDropList();
     /** 阻止合成事件间的冒泡
      * e.stopPropagation();
      *  阻止原生事件与最外层document上的事件间的冒泡
@@ -93,7 +80,7 @@ export default class MyDropList extends Component {
     });
   }
 
-  handleSelectClick(item, value, e) {
+  handleSelectClick(e, item, value) {
     const { options } = this.state;
     const { multiple, name, type } = this.props;
 
@@ -124,14 +111,15 @@ export default class MyDropList extends Component {
     return (
       <div className={styles.filterdropitem} style={style}>
         {type === 'Select' && (
-          <div className={styles.filterdrop}>
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+          <div className={styles.filterdrop} tabIndex="0" onBlur={() => this.hideDropList()}>
             <div>
-              <span className={styles.filtertitle} onClick={this.handleFilterClick}>
-                {text}&nbsp;
+              {this.props.showItemSeparator && (
+                <span style={{ marginRight: 10, color: '#d4dfe5' }}>|</span>
+              )}
+              <span className={styles.filtertitle} onClick={e => this.handleFilterClick(e)}>
+                {text}
                 <Icon type={showFilterDrop ? 'up' : 'down'} />
-                {this.props.showItemSeparator && (
-                  <span style={{ marginLeft: 5, color: '#d4dfe5' }}>|</span>
-                )}
               </span>
             </div>
             <div
@@ -153,7 +141,7 @@ export default class MyDropList extends Component {
                               : classNames(styles.filteritem)
                           }
                           value={item.value}
-                          onClick={this.handleSelectClick.bind(this, item, null)}
+                          onClick={e => this.handleSelectClick(e, item)}
                         >
                           {item.title}
                           {item.checked && <Icon type="check" />}
@@ -170,7 +158,7 @@ export default class MyDropList extends Component {
           <div className={styles.filterdrop}>
             <div>
               <DatePicker.RangePicker
-                onChange={this.handleSelectClick.bind(this)}
+                onChange={(ment, val, e) => this.handleSelectClick(e, ment, val)}
                 value={
                   options === ''
                     ? null

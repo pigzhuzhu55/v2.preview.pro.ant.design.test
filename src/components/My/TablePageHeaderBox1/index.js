@@ -34,7 +34,6 @@ export default class TablePageHeaderBox1 extends Component {
         placeholder: searchOption.placeholder,
       },
     };
-    this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(value) {
@@ -82,7 +81,7 @@ export default class TablePageHeaderBox1 extends Component {
         </div>
         <div className={classNames(styles.boxR, 'floatR')}>
           <InputGroup compact>
-            <Select defaultValue={searchOption.name} onChange={this.handleChange.bind(this)}>
+            <Select defaultValue={searchOption.name} onChange={() => this.handleChange()}>
               {options.map(
                 item =>
                   item && (
@@ -94,9 +93,9 @@ export default class TablePageHeaderBox1 extends Component {
             </Select>
             <Search
               value={searchOption.value}
-              onChange={this.handleChange2.bind(this)}
+              onChange={() => this.handleChange2()}
               placeholder={searchOption.placeholder}
-              onSearch={this.handleSearch.bind(this)}
+              onSearch={() => this.handleSearch()}
               style={{ width: 200 }}
             />
           </InputGroup>

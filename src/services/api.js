@@ -107,3 +107,9 @@ export async function removeOrganization(params) {
 export async function getProvinceList(params) {
   return request(`/api/none/common/province/list?${stringify(params)}`);
 }
+export async function getCityList(params) {
+  return request(`/api/none/common/city/list?${stringify(params)}`);
+}
+export async function getCountyList(params) {
+  return request(`/api/none/common/county/list?${stringify(params)}`);
+}

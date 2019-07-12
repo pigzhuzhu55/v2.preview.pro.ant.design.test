@@ -192,7 +192,26 @@ class OrgList extends PureComponent {
             options: '',
           },
         },
-        { text: '省份', key: 'province', parent: '', children: '', options: proviceOption },
+        { text: '省', key: 'province', hasChildren: true, options: proviceOption },
+        {
+          text: '市',
+          key: 'city',
+          parent: 'province',
+          hasChildren: true,
+          options: {
+            version: 0,
+            options: [],
+          },
+        },
+        {
+          text: '县',
+          key: 'county',
+          parent: 'city',
+          options: {
+            version: 0,
+            options: [],
+          },
+        },
       ],
     };
 
