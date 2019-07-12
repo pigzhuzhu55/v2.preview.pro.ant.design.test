@@ -61,54 +61,73 @@ export default class MyDropList extends Component {
             this.setState({
               options: response.data,
             });
+
+            const nextProps = {
+              ...this.props,
+              options: response.data,
+            };
+
+            this.props.onChange(nextProps);
           }
         });
       }
     }
   }
 
-  hideDropList() {
+  hideDropList = () => {
     const { showFilterDrop } = this.state;
     if (showFilterDrop) {
       this.setState({
         showFilterDrop: false,
       });
     }
-  }
+  };
 
-  handleFilterClick(e) {
+  handleFilterClick = () => {
     // this.props.hiddenAllDropList();
     /** 阻止合成事件间的冒泡
      * e.stopPropagation();
      *  阻止原生事件与最外层document上的事件间的冒泡
      */
-    e.nativeEvent.stopImmediatePropagation();
     const { showFilterDrop } = this.state;
     this.setState({
       showFilterDrop: !showFilterDrop,
     });
-  }
+  };
 
-  handleSelectClick(e, value) {
-    const { multiple, name, type } = this.props;
-
+  handleSelectClick = value => {
+    const { type, multiple } = this.props;
+    let newValues = [];
     if (type === 'Select') {
-      e.nativeEvent.stopImmediatePropagation();
+      if (multiple) {
+        newValues = this.props.value.split('|').filter(val => val !== '');
+        if (newValues.some(val => val === value)) {
+          newValues = newValues.filter(val => val !== value);
+        } else {
+          newValues.push(value);
+        }
+      } else {
+        newValues.push(value);
+      }
+    } else {
+      newValues.push(`${value.split(',')[0]} ~ ${value.split(',')[1]}`);
     }
+    this.setState({
+      value: newValues.join('|'),
+    });
 
-    if (!multiple) {
-      this.setState({
-        value,
-      });
-    }
+    const nextProps = {
+      ...this.props,
+      value: newValues.join('|'),
+    };
 
-    this.props.onChange(this.props, value);
-  }
+    this.props.onChange(nextProps);
+  };
 
   render() {
     const { name, text, style, type } = this.props;
     const { showFilterDrop, options, value } = this.state;
-
+    const values = this.props.value.split('|').filter(val => val !== '');
     return (
       <div className={styles.filterdropitem} style={style}>
         {type === 'Select' && (
@@ -118,7 +137,7 @@ export default class MyDropList extends Component {
               {this.props.showItemSeparator && (
                 <span style={{ marginRight: 10, color: '#d4dfe5' }}>|</span>
               )}
-              <span className={styles.filtertitle} onClick={e => this.handleFilterClick(e)}>
+              <span className={styles.filtertitle} onClick={() => this.handleFilterClick()}>
                 {text}
                 <Icon type={showFilterDrop ? 'up' : 'down'} />
               </span>
@@ -137,15 +156,15 @@ export default class MyDropList extends Component {
                         <li
                           key={item.key}
                           className={
-                            item.key === value
+                            values.some(x => x === item.key.toString())
                               ? classNames(styles.selected, styles.filteritem)
                               : classNames(styles.filteritem)
                           }
                           value={item.key}
-                          onClick={e => this.handleSelectClick(e, item.key)}
+                          onClick={() => this.handleSelectClick(item.key.toString())}
                         >
                           {item.title}
-                          {item.key === value && <Icon type="check" />}
+                          {values.some(x => x === item.key.toString()) && <Icon type="check" />}
                         </li>
                       )
                   )}
@@ -159,7 +178,7 @@ export default class MyDropList extends Component {
           <div className={styles.filterdrop}>
             <div>
               <DatePicker.RangePicker
-                onChange={(ment, val, e) => this.handleSelectClick(e, val)}
+                onChange={(ment, val) => this.handleSelectClick(val.toString())}
                 value={
                   value === ''
                     ? null

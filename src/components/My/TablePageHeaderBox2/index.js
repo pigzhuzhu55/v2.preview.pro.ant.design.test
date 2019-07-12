@@ -51,12 +51,13 @@ export default class TablePageHeaderBox2 extends Component {
   //   }
   // }
 
-  handleChangeSelect(childPros, value) {
+  handleChangeSelect(childPros) {
     const { filters } = this.state;
 
     filters.forEach(item => {
       if (item.key === childPros.name) {
-        item.value = value.toString();
+        item.value = childPros.value;
+        item.options = childPros.options;
       }
     });
 
@@ -73,24 +74,13 @@ export default class TablePageHeaderBox2 extends Component {
   }
 
   handleClearSelect() {
-    const {
-      filters: { filters },
-      showMore,
-    } = this.state;
+    const { filters } = this.state;
 
     filters.forEach(item => {
-      if (Array.isArray(item.options.options)) {
-        item.options.options.forEach(a => {
-          a.checked = false;
-        });
-      } else if (typeof item.options.options === 'string') {
-        item.options.options = '';
-      }
+      item.value = '';
     });
     this.setState({
-      filters: {
-        filters,
-      },
+      filters,
     });
   }
 
@@ -115,7 +105,7 @@ export default class TablePageHeaderBox2 extends Component {
                 name={item.key}
                 {...item}
                 showItemSeparator={index !== 0}
-                onChange={(ops, key) => this.handleChangeSelect(ops, key)}
+                onChange={childPros => this.handleChangeSelect(childPros)}
                 style={{
                   display: index < maxFilterNum || showMore ? '' : 'none',
                 }}
@@ -135,7 +125,7 @@ export default class TablePageHeaderBox2 extends Component {
                     <MySelectBox
                       name={item.key}
                       {...item}
-                      onChange={(ops, key) => this.handleChangeSelect(ops, key)}
+                      onChange={childPros => this.handleChangeSelect(childPros)}
                     />
                   )
               )}

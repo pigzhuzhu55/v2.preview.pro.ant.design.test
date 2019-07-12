@@ -10,62 +10,80 @@ export default class MySelectBox extends Component {
   static propTypes = {
     name: PropTypes.string,
     text: PropTypes.string,
-    options: PropTypes.any,
+    value: PropTypes.string,
+    options: PropTypes.array,
+    type: PropTypes.string,
   };
 
   static defaultProps = {
     name: '',
     text: '',
-    options: {},
+    options: [],
+    value: '',
+    type: 'Select',
   };
 
   constructor(props) {
     super(props);
 
-    const { options } = this.props;
+    const { value, options } = this.props;
 
     this.state = {
+      value,
       options,
     };
   }
 
-  handleCloseTag(item, e) {
-    const { options } = this.state;
-    const { name } = this.props;
+  componentWillReceiveProps(nextProps) {
+    const { value, options } = nextProps;
 
-    if (Array.isArray(options.options)) {
-      item.checked = false;
-    } else {
-      options.options = '';
-    }
-
-    this.props.onChange(options, name);
+    this.setState({
+      value,
+      options,
+    });
   }
 
+  handleCloseTag = value => {
+    const values = this.props.value.split('|').filter(val => val !== '' && val !== value);
+
+    const nextProps = {
+      ...this.props,
+      value: values.join('|'),
+    };
+
+    this.props.onChange(nextProps);
+  };
+
   render() {
-    const { name, text } = this.props;
-    const {
-      options: { options },
-    } = this.state;
+    const { name, text, type } = this.props;
+    const { value, options } = this.state;
+
+    const keyTitles = [];
+    if (value !== '') {
+      const keys = value.split('|');
+
+      if (type === 'Select') {
+        keys.forEach(key => {
+          const x = options.filter(opt => opt.key.toString() === key);
+          if (x.length > 0) {
+            keyTitles.push(x[0]);
+          }
+        });
+      } else {
+        keys.forEach(key => {
+          keyTitles.push({ key, title: key });
+        });
+      }
+    }
 
     return (
       <div key={name} className={styles.selecteditem}>
         <span className={styles.selectedlabel}>{text}：</span>
-        {Array.isArray(options)
-          ? options.map(
-              item =>
-                item &&
-                item.checked && (
-                  <Tag key={item.key} closable onClose={() => this.handleCloseTag(item)}>
-                    {item.title}
-                  </Tag>
-                )
-            )
-          : options !== '' && (
-              <Tag closable onClose={() => this.handleCloseTag(options)}>
-                {options}
-              </Tag>
-            )}
+        {keyTitles.map(item => (
+          <Tag key={item.key} closable onClose={() => this.handleCloseTag(item.key.toString())}>
+            {item.title}
+          </Tag>
+        ))}
       </div>
     );
   }
