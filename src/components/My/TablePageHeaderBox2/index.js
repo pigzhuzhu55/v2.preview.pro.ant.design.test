@@ -71,8 +71,8 @@ export default class TablePageHeaderBox2 extends Component {
         item.options = [];
         item.parentValue = thisVal;
 
-        // 当前节点有值，需要递归
-        if (thisVal !== '') {
+        // 当前节点有子节点，需要递归
+        if (myProps.child !== '') {
           childKey = item.child;
           thisVal = item.value;
         }
