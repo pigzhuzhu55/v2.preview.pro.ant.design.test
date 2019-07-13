@@ -22,7 +22,7 @@ export default class MyDropList extends Component {
     loadData: PropTypes.func,
     child: PropTypes.string,
     parent: PropTypes.string,
-    getParentValue: PropTypes.func,
+    parentValue: PropTypes.string,
   };
 
   static defaultProps = {
@@ -37,17 +37,18 @@ export default class MyDropList extends Component {
     loadData: null,
     child: '',
     parent: '',
-    getParentValue: null,
+    parentValue: '',
   };
 
   constructor(props) {
     super(props);
 
-    const { options, value } = this.props;
+    const { options, value, parentValue } = this.props;
 
     this.state = {
       options,
       value,
+      parentValue,
       showFilterDrop: false,
       activeVals: {},
       loading: false,
@@ -84,11 +85,12 @@ export default class MyDropList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { value, options } = nextProps;
+    const { value, options, parentValue } = nextProps;
 
     this.setState({
       value,
       options,
+      parentValue,
     });
   }
 
@@ -102,15 +104,10 @@ export default class MyDropList extends Component {
   };
 
   handleFilterClick = () => {
-    const { type, loadData, child, parent, getParentValue } = this.props;
-    const { showFilterDrop, value, options, loading } = this.state;
+    const { type, loadData, child, parent } = this.props;
+    const { showFilterDrop, value, options, loading, parentValue } = this.state;
 
     if (type === 'Select') {
-      let parentValue = '';
-      if (parent !== '' && getParentValue !== null) {
-        parentValue = getParentValue(parent);
-      }
-
       // 父节点有值，且不是双值，且当前节点未加载数据，则从服务的拉取数据
       if (
         parentValue !== '' &&
@@ -137,6 +134,11 @@ export default class MyDropList extends Component {
             this.props.onChange(nextProps);
           }
         });
+      }
+
+      // 有父节点，但是父节点未选择值，或者父节点选了2个值，则不弹出
+      if (parent !== '' && (parentValue === '' || parentValue.includes('|'))) {
+        return;
       }
     }
 
@@ -175,8 +177,8 @@ export default class MyDropList extends Component {
   };
 
   render() {
-    const { name, text, style, type } = this.props;
-    const { showFilterDrop, options, value, loading } = this.state;
+    const { name, text, style, type, parent } = this.props;
+    const { showFilterDrop, options, value, loading, parentValue } = this.state;
     const values = this.props.value.split('|').filter(val => val !== '');
     return (
       <div className={styles.filterdropitem} style={style}>
@@ -187,7 +189,14 @@ export default class MyDropList extends Component {
               {this.props.showItemSeparator && this.props.parent === '' && (
                 <span style={{ marginRight: 10, color: '#d4dfe5' }}>|</span>
               )}
-              <span className={styles.filtertitle} onClick={() => this.handleFilterClick()}>
+              <span
+                className={
+                  parent !== '' && (parentValue === '' || parentValue.includes('|'))
+                    ? classNames(styles.filtertitle, styles.disabled)
+                    : classNames(styles.filtertitle)
+                }
+                onClick={() => this.handleFilterClick()}
+              >
                 {text}
                 <Icon type={showFilterDrop ? 'up' : 'down'} />
                 {this.props.child !== '' && <Icon type="link" />}

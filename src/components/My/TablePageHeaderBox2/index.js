@@ -51,25 +51,30 @@ export default class TablePageHeaderBox2 extends Component {
   //   }
   // }
 
-  handleChangeSelect = childPros => {
+  handleChangeSelect = myProps => {
     const { filters } = this.state;
 
     /**
      * 遍历并重新赋值、级联赋值
      */
-    let childKey = childPros.child;
-    let childVal = childPros.value;
+    let childKey = myProps.child;
+    let thisVal = myProps.value;
 
     filters.forEach(item => {
-      if (item.key === childPros.name) {
-        item.value = childPros.value;
-        item.options = childPros.options;
-      } else if (item.key === childKey) {
+      if (item.key === myProps.name) {
+        item.value = myProps.value;
+        item.options = myProps.options;
+      }
+      // 子节点清空
+      else if (item.key === childKey) {
         item.value = '';
         item.options = [];
-        if (childVal !== '') {
+        item.parentValue = thisVal;
+
+        // 当前节点有值，需要递归
+        if (thisVal !== '') {
           childKey = item.child;
-          childVal = item.value;
+          thisVal = item.value;
         }
       }
     });
@@ -77,17 +82,6 @@ export default class TablePageHeaderBox2 extends Component {
     this.setState({
       filters,
     });
-  };
-
-  getDropListValue = parentKey => {
-    const { filters } = this.state;
-
-    const parent = filters.filter(item => item.key === parentKey);
-
-    if (parent.length > 0) {
-      return parent[0].value;
-    }
-    return '';
   };
 
   handleToggleFilter() {
@@ -102,6 +96,7 @@ export default class TablePageHeaderBox2 extends Component {
 
     filters.forEach(item => {
       item.value = '';
+      item.parentValue = '';
     });
     this.setState({
       filters,
@@ -129,8 +124,7 @@ export default class TablePageHeaderBox2 extends Component {
                 name={item.key}
                 {...item}
                 showItemSeparator={index !== 0}
-                onChange={childPros => this.handleChangeSelect(childPros)}
-                getParentValue={parentKey => this.getDropListValue(parentKey)}
+                onChange={myProps => this.handleChangeSelect(myProps)}
                 style={{
                   display: index < maxFilterNum || showMore ? '' : 'none',
                 }}
