@@ -129,6 +129,10 @@ class OrgList extends PureComponent {
     return getCityList({ provinceId });
   };
 
+  queryCountyData = cityId => {
+    return getCountyList({ cityId });
+  };
+
   render() {
     const buttons = [{ text: '新增', type: 'primary' }, { text: '移除' }];
     const options = [
@@ -164,7 +168,17 @@ class OrgList extends PureComponent {
         key: 'city',
         value: '',
         parent: 'province',
-        onLoadData: provinceId => this.queryCityData(provinceId),
+        child: 'county',
+        multiple: true,
+        loadData: provinceId => this.queryCityData(provinceId),
+      },
+      {
+        text: '县',
+        key: 'county',
+        value: '',
+        parent: 'city',
+        multiple: true,
+        loadData: cityId => this.queryCountyData(cityId),
       },
     ];
 

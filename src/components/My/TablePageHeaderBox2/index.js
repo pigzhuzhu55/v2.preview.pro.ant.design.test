@@ -54,10 +54,39 @@ export default class TablePageHeaderBox2 extends Component {
   handleChangeSelect(childPros) {
     const { filters } = this.state;
 
+    /**
+     * 遍历并重新赋值、级联赋值
+     */
+    let childKey = childPros.child;
+    let childVal = childPros.value;
+
     filters.forEach(item => {
       if (item.key === childPros.name) {
         item.value = childPros.value;
         item.options = childPros.options;
+      } else if (item.key === childKey) {
+        if (childVal !== '') {
+          const { loadData, child } = item;
+          item.value = '';
+          if (!childVal.includes('|')) {
+            loadData(childVal).then(response => {
+              if (response.code === 0) {
+                item.options = response.data;
+
+                this.setState({
+                  filters,
+                });
+              }
+            });
+          } else {
+            item.options = [];
+          }
+          childKey = item.child;
+          childVal = item.value;
+        } else {
+          item.value = '';
+          item.options = [];
+        }
       }
     });
 

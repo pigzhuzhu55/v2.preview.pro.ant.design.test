@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Input, Icon, DatePicker } from 'antd';
+import request from '@/utils/request';
 import classNames from 'classnames';
 
 import styles from './index.less';
@@ -74,6 +75,15 @@ export default class MyDropList extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { value, options } = nextProps;
+
+    this.setState({
+      value,
+      options,
+    });
+  }
+
   hideDropList = () => {
     const { showFilterDrop } = this.state;
     if (showFilterDrop) {
@@ -96,7 +106,7 @@ export default class MyDropList extends Component {
   };
 
   handleSelectClick = value => {
-    const { type, multiple } = this.props;
+    const { type, multiple, child } = this.props;
     let newValues = [];
     if (type === 'Select') {
       if (multiple) {
@@ -134,12 +144,13 @@ export default class MyDropList extends Component {
           // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
           <div className={styles.filterdrop} tabIndex="0" onBlur={() => this.hideDropList()}>
             <div>
-              {this.props.showItemSeparator && (
+              {this.props.showItemSeparator && this.props.parent === '' && (
                 <span style={{ marginRight: 10, color: '#d4dfe5' }}>|</span>
               )}
               <span className={styles.filtertitle} onClick={() => this.handleFilterClick()}>
                 {text}
                 <Icon type={showFilterDrop ? 'up' : 'down'} />
+                {this.props.child !== '' && <Icon type="link" />}
               </span>
             </div>
             <div
