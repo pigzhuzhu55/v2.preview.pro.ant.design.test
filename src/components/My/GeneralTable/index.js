@@ -1,5 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Table, Alert, Menu, Button, Dropdown, Icon, Checkbox } from 'antd';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import styles from './index.less';
 
@@ -14,14 +15,23 @@ function initTotalList(columns) {
 }
 
 class GeneralTable extends PureComponent {
+  static propTypes = {
+    filters2: PropTypes.array,
+  };
+
+  static defaultProps = {
+    filters2: [],
+  };
+
   constructor(props) {
     super(props);
-    const { columns } = props;
+    const { columns, filters2 } = props;
     const needTotalList = initTotalList(columns);
 
     this.state = {
       selectedRowKeys: [],
       needTotalList,
+      filters2,
     };
   }
 
@@ -86,8 +96,23 @@ class GeneralTable extends PureComponent {
     }
   };
 
+  onChangeFilter2 = checkedValue => {
+    const { filters2 } = this.state;
+    const key = checkedValue.target.value;
+    const value = checkedValue.target.checked ? '1' : '0';
+
+    filters2.forEach(item => {
+      if (item.key === key) {
+        item.value = value;
+      }
+    });
+    this.setState({
+      filters2,
+    });
+  };
+
   render() {
-    const { selectedRowKeys, needTotalList } = this.state;
+    const { selectedRowKeys, needTotalList, filters2 } = this.state;
     const { data = {}, rowKey, selectedRows, ...rest } = this.props;
     const { list = [], pagination } = data;
 
@@ -128,7 +153,15 @@ class GeneralTable extends PureComponent {
               )}
             </div>
             <div className="floatR">
-              <Checkbox>显示已删除</Checkbox>
+              {filters2.map((item, index) => (
+                <Checkbox
+                  value={item.key}
+                  checked={item.value === '1'}
+                  onChange={this.onChangeFilter2}
+                >
+                  {item.text}
+                </Checkbox>
+              ))}
             </div>
           </div>
         </div>

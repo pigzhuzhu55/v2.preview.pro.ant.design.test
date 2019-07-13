@@ -85,21 +85,17 @@ class OrgList extends PureComponent {
     });
   };
 
-  handleSearch = e => {
-    e.preventDefault();
+  handleSearch = () => {
+    // 获取模糊查询条件
+    const { searchText } = this.searchBox.state;
 
-    const { dispatch } = this.props;
+    // 获取筛选查询条件
+    const { filters } = this.filterBox.state;
 
-    const values = {};
+    // 获取列表特殊过滤条件
+    const { filters2 } = this.resultBox.state;
 
-    this.setState({
-      formValues: values,
-    });
-
-    dispatch({
-      type: 'orgList/listLoad',
-      payload: values,
-    });
+    console.log(searchText, filters, filters2);
   };
 
   handleModalVisible = flag => {
@@ -134,14 +130,13 @@ class OrgList extends PureComponent {
   };
 
   render() {
-    const buttons = [{ text: '新增', type: 'primary' }, { text: '移除' }];
-    const options = [
-      { text: '机构名称', value: 'orgName', placeholder: '请输入机构名称', default: true },
-      { text: '电话号码', value: 'telephone', placeholder: '请输入电话号码' },
-    ];
-
     const { expandForm, selectedRows } = this.state;
 
+    const buttons = [{ text: '新增', type: 'primary' }, { text: '移除' }];
+    const searchTexts = [
+      { text: '机构名称', key: 'orgName', placeholder: '请输入机构名称' },
+      { text: '电话号码', key: 'telephone', placeholder: '请输入电话号码' },
+    ];
     const filters = [
       {
         text: '性质',
@@ -181,6 +176,7 @@ class OrgList extends PureComponent {
         loadData: cityId => this.queryCountyData(cityId),
       },
     ];
+    const filters2 = [{ text: '显示已删除', key: 'deleteFlag', value: '0' }];
 
     const {
       orgList: { listData },
@@ -191,15 +187,28 @@ class OrgList extends PureComponent {
       <PageHeaderWrapper>
         <div className={styles.tableHead}>
           <TablePageHeaderBox1
+            ref={c => {
+              this.searchBox = c;
+            }}
             buttons={buttons}
-            options={options}
+            searchTexts={searchTexts}
             handleSearch={this.handleSearch}
           />
-          <TablePageHeaderBox2 filters={filters} maxFilterNum={5} />
+          <TablePageHeaderBox2
+            ref={c => {
+              this.filterBox = c;
+            }}
+            filters={filters}
+            maxFilterNum={5}
+          />
         </div>
         <div className={styles.tableContent}>
           <GeneralTable
+            ref={c => {
+              this.resultBox = c;
+            }}
             size="small"
+            filters2={filters2}
             selectedRows={selectedRows}
             loading={loading}
             data={listData}

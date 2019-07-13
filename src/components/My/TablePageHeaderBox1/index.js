@@ -13,60 +13,60 @@ const { Option } = Select;
 export default class TablePageHeaderBox1 extends Component {
   static propTypes = {
     buttons: PropTypes.array,
-    options: PropTypes.array,
+    searchTexts: PropTypes.array,
   };
 
   static defaultProps = {
-    options: [],
+    searchTexts: [],
     buttons: [],
   };
 
   constructor(props) {
     super(props);
-    const { options } = this.props;
-
-    const searchOption = options.filter(x => x.default)[0];
+    const { searchTexts } = this.props;
 
     this.state = {
-      searchOption: {
-        name: searchOption.value,
+      searchText: {
+        key: searchTexts[0].key,
         value: '',
-        placeholder: searchOption.placeholder,
+        placeholder: searchTexts[0].placeholder,
       },
     };
   }
 
-  handleChange(value) {
-    const { options } = this.props;
-    const searchOption = options.filter(x => x.value === value)[0];
+  handleChange = value => {
+    const { searchTexts } = this.props;
+    const newSearchText = searchTexts.filter(x => x.key === value)[0];
+
+    const { searchText } = this.state;
 
     this.setState({
-      searchOption: {
-        name: searchOption.value,
-        value: '',
-        placeholder: searchOption.placeholder,
+      searchText: {
+        key: newSearchText.key,
+        value: searchText.value,
+        placeholder: newSearchText.placeholder,
       },
     });
-  }
+  };
 
-  handleChange2(e) {
-    const { searchOption } = this.state;
+  handleChangeText = e => {
+    const { searchText } = this.state;
     this.setState({
-      searchOption: {
-        name: searchOption.name,
+      searchText: {
+        key: searchText.key,
         value: e.target.value,
-        placeholder: searchOption.placeholder,
+        placeholder: searchText.placeholder,
       },
     });
-  }
+  };
 
-  handleSearch(item, e) {
-    this.props.handleSearch(e);
-  }
+  handleSearch = () => {
+    this.props.handleSearch();
+  };
 
   render() {
-    const { buttons, options, defaultOption } = this.props;
-    const { searchOption } = this.state;
+    const { buttons, searchTexts } = this.props;
+    const { searchText } = this.state;
     return (
       <div className={classNames(styles.box, 'clearfix')}>
         <div className={classNames(styles.boxL, 'floatL')}>
@@ -81,20 +81,17 @@ export default class TablePageHeaderBox1 extends Component {
         </div>
         <div className={classNames(styles.boxR, 'floatR')}>
           <InputGroup compact>
-            <Select defaultValue={searchOption.name} onChange={() => this.handleChange()}>
-              {options.map(
-                item =>
-                  item && (
-                    <Option key={item.value} value={item.value}>
-                      {item.text}
-                    </Option>
-                  )
-              )}
+            <Select defaultValue={searchText.key} onChange={value => this.handleChange(value)}>
+              {searchTexts.map(item => (
+                <Option key={item.key} value={item.key}>
+                  {item.text}
+                </Option>
+              ))}
             </Select>
             <Search
-              value={searchOption.value}
-              onChange={() => this.handleChange2()}
-              placeholder={searchOption.placeholder}
+              value={searchText.value}
+              onChange={e => this.handleChangeText(e)}
+              placeholder={searchText.placeholder}
               onSearch={() => this.handleSearch()}
               style={{ width: 200 }}
             />
