@@ -147,7 +147,6 @@ class OrgList extends PureComponent {
         text: '性质',
         key: 'orgType',
         value: '',
-        multiple: true,
         options: [{ title: '直营', key: '0' }, { title: '加盟', key: '1' }],
       },
       {
@@ -161,6 +160,7 @@ class OrgList extends PureComponent {
         key: 'province',
         value: '',
         child: 'city',
+        multiple: true,
         loadData: this.queryProvinceData,
       },
       {

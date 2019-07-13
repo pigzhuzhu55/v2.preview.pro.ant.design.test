@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { Input, Icon, DatePicker } from 'antd';
+import { Input, Icon, DatePicker, Spin } from 'antd';
 import request from '@/utils/request';
 import classNames from 'classnames';
 
@@ -22,6 +22,7 @@ export default class MyDropList extends Component {
     loadData: PropTypes.func,
     child: PropTypes.string,
     parent: PropTypes.string,
+    getParentValue: PropTypes.func,
   };
 
   static defaultProps = {
@@ -36,6 +37,7 @@ export default class MyDropList extends Component {
     loadData: null,
     child: '',
     parent: '',
+    getParentValue: null,
   };
 
   constructor(props) {
@@ -48,6 +50,7 @@ export default class MyDropList extends Component {
       value,
       showFilterDrop: false,
       activeVals: {},
+      loading: false,
     };
   }
 
@@ -57,12 +60,17 @@ export default class MyDropList extends Component {
     if (type === 'Select') {
       // 说明是第一个下拉，直接加载数据
       if (child !== '' && parent === '') {
+        this.setState({
+          loading: true,
+        });
         loadData().then(response => {
           if (response.code === 0) {
             this.setState({
+              loading: false,
               options: response.data,
             });
 
+            // 这里主要是为了更新MySelectBox里面的选项,所以需要传出去
             const nextProps = {
               ...this.props,
               options: response.data,
@@ -94,12 +102,44 @@ export default class MyDropList extends Component {
   };
 
   handleFilterClick = () => {
-    // this.props.hiddenAllDropList();
-    /** 阻止合成事件间的冒泡
-     * e.stopPropagation();
-     *  阻止原生事件与最外层document上的事件间的冒泡
-     */
-    const { showFilterDrop } = this.state;
+    const { type, loadData, child, parent, getParentValue } = this.props;
+    const { showFilterDrop, value, options, loading } = this.state;
+
+    if (type === 'Select') {
+      let parentValue = '';
+      if (parent !== '' && getParentValue !== null) {
+        parentValue = getParentValue(parent);
+      }
+
+      // 父节点有值，且不是双值，且当前节点未加载数据，则从服务的拉取数据
+      if (
+        parentValue !== '' &&
+        !parentValue.includes('|') &&
+        value === '' &&
+        options.length === 0
+      ) {
+        this.setState({
+          loading: true,
+        });
+        loadData(parentValue).then(response => {
+          if (response.code === 0) {
+            this.setState({
+              loading: false,
+              options: response.data,
+            });
+
+            // 这里主要是为了更新MySelectBox里面的选项,所以需要传出去
+            const nextProps = {
+              ...this.props,
+              options: response.data,
+            };
+
+            this.props.onChange(nextProps);
+          }
+        });
+      }
+    }
+
     this.setState({
       showFilterDrop: !showFilterDrop,
     });
@@ -136,7 +176,7 @@ export default class MyDropList extends Component {
 
   render() {
     const { name, text, style, type } = this.props;
-    const { showFilterDrop, options, value } = this.state;
+    const { showFilterDrop, options, value, loading } = this.state;
     const values = this.props.value.split('|').filter(val => val !== '');
     return (
       <div className={styles.filterdropitem} style={style}>
@@ -160,26 +200,32 @@ export default class MyDropList extends Component {
               }}
             >
               <div className={styles.poper}>
-                <div className={styles.filterscrollbox}>
-                  {options.map(
-                    item =>
-                      item && (
-                        <li
-                          key={item.key}
-                          className={
-                            values.some(x => x === item.key.toString())
-                              ? classNames(styles.selected, styles.filteritem)
-                              : classNames(styles.filteritem)
-                          }
-                          value={item.key}
-                          onClick={() => this.handleSelectClick(item.key.toString())}
-                        >
-                          {item.title}
-                          {values.some(x => x === item.key.toString()) && <Icon type="check" />}
-                        </li>
-                      )
-                  )}
-                </div>
+                {loading ? (
+                  <div className={styles.loading}>
+                    <Spin />
+                  </div>
+                ) : (
+                  <div className={styles.filterscrollbox}>
+                    {options.map(
+                      item =>
+                        item && (
+                          <li
+                            key={item.key}
+                            className={
+                              values.some(x => x === item.key.toString())
+                                ? classNames(styles.selected, styles.filteritem)
+                                : classNames(styles.filteritem)
+                            }
+                            value={item.key}
+                            onClick={() => this.handleSelectClick(item.key.toString())}
+                          >
+                            {item.title}
+                            {values.some(x => x === item.key.toString()) && <Icon type="check" />}
+                          </li>
+                        )
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>

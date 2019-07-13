@@ -51,7 +51,7 @@ export default class TablePageHeaderBox2 extends Component {
   //   }
   // }
 
-  handleChangeSelect(childPros) {
+  handleChangeSelect = childPros => {
     const { filters } = this.state;
 
     /**
@@ -65,27 +65,11 @@ export default class TablePageHeaderBox2 extends Component {
         item.value = childPros.value;
         item.options = childPros.options;
       } else if (item.key === childKey) {
+        item.value = '';
+        item.options = [];
         if (childVal !== '') {
-          const { loadData, child } = item;
-          item.value = '';
-          if (!childVal.includes('|')) {
-            loadData(childVal).then(response => {
-              if (response.code === 0) {
-                item.options = response.data;
-
-                this.setState({
-                  filters,
-                });
-              }
-            });
-          } else {
-            item.options = [];
-          }
           childKey = item.child;
           childVal = item.value;
-        } else {
-          item.value = '';
-          item.options = [];
         }
       }
     });
@@ -93,7 +77,18 @@ export default class TablePageHeaderBox2 extends Component {
     this.setState({
       filters,
     });
-  }
+  };
+
+  getDropListValue = parentKey => {
+    const { filters } = this.state;
+
+    const parent = filters.filter(item => item.key === parentKey);
+
+    if (parent.length > 0) {
+      return parent[0].value;
+    }
+    return '';
+  };
 
   handleToggleFilter() {
     const { showMore } = this.state;
@@ -135,6 +130,7 @@ export default class TablePageHeaderBox2 extends Component {
                 {...item}
                 showItemSeparator={index !== 0}
                 onChange={childPros => this.handleChangeSelect(childPros)}
+                getParentValue={parentKey => this.getDropListValue(parentKey)}
                 style={{
                   display: index < maxFilterNum || showMore ? '' : 'none',
                 }}
