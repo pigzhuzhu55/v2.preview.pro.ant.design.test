@@ -51,6 +51,21 @@ export default class TablePageHeaderBox2 extends Component {
   //   }
   // }
 
+  handleLoadSelect = myProps => {
+    const { filters } = this.state;
+
+    filters.forEach(item => {
+      if (item.key === myProps.name) {
+        item.value = myProps.value;
+        item.options = myProps.options;
+      }
+    });
+
+    this.setState({
+      filters,
+    });
+  };
+
   handleChangeSelect = myProps => {
     const { filters } = this.state;
 
@@ -82,6 +97,8 @@ export default class TablePageHeaderBox2 extends Component {
     this.setState({
       filters,
     });
+
+    this.props.handleSearch();
   };
 
   handleToggleFilter() {
@@ -101,6 +118,7 @@ export default class TablePageHeaderBox2 extends Component {
     this.setState({
       filters,
     });
+    this.props.handleSearch();
   }
 
   render() {
@@ -125,6 +143,7 @@ export default class TablePageHeaderBox2 extends Component {
                 {...item}
                 showItemSeparator={index !== 0}
                 onChange={myProps => this.handleChangeSelect(myProps)}
+                onLoad={myProps => this.handleLoadSelect(myProps)}
                 style={{
                   display: index < maxFilterNum || showMore ? '' : 'none',
                 }}

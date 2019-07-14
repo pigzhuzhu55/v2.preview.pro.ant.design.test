@@ -192,3 +192,11 @@ export const importCDN = (url, name) =>
     };
     document.head.appendChild(dom);
   });
+
+export function strMapToObj(strMap) {
+  const obj = Object.create(null);
+  strMap.forEach((v, k) => {
+    obj[k] = v;
+  });
+  return obj;
+}

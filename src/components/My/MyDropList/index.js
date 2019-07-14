@@ -60,7 +60,7 @@ export default class MyDropList extends Component {
 
     if (type === 'Select') {
       // 说明是第一个下拉，直接加载数据
-      if (child !== '' && parent === '') {
+      if (parent === '' && !!loadData) {
         this.setState({
           loading: true,
         });
@@ -77,7 +77,7 @@ export default class MyDropList extends Component {
               options: response.data,
             };
 
-            this.props.onChange(nextProps);
+            this.props.onLoad(nextProps);
           }
         });
       }
@@ -131,7 +131,7 @@ export default class MyDropList extends Component {
               options: response.data,
             };
 
-            this.props.onChange(nextProps);
+            this.props.onLoad(nextProps);
           }
         });
       }

@@ -109,6 +109,7 @@ class GeneralTable extends PureComponent {
     this.setState({
       filters2,
     });
+    this.props.handleSearch();
   };
 
   render() {
@@ -155,6 +156,7 @@ class GeneralTable extends PureComponent {
             <div className="floatR">
               {filters2.map((item, index) => (
                 <Checkbox
+                  key={item.key}
                   value={item.key}
                   checked={item.value === '1'}
                   onChange={this.onChangeFilter2}

@@ -9,6 +9,7 @@ import TablePageHeaderBox2 from '@/components/My/TablePageHeaderBox2';
 import { FormattedMessage } from 'umi-plugin-react/locale';
 
 import { getProvinceList, getCityList, getCountyList } from '@/services/api';
+import { strMapToObj } from '@/utils/utils';
 
 import styles from './OrgList.less';
 
@@ -46,6 +47,18 @@ class OrgList extends PureComponent {
       render(val) {
         return <Badge color={orgTypeMap[val]} text={orgType[val]} />;
       },
+    },
+    {
+      title: '省',
+      dataIndex: 'privince',
+    },
+    {
+      title: '市',
+      dataIndex: 'city',
+    },
+    {
+      title: '县',
+      dataIndex: 'county',
     },
     {
       title: '电话号码',
@@ -86,6 +99,8 @@ class OrgList extends PureComponent {
   };
 
   handleSearch = () => {
+    const { dispatch } = this.props;
+
     // 获取模糊查询条件
     const { searchText } = this.searchBox.state;
 
@@ -95,7 +110,28 @@ class OrgList extends PureComponent {
     // 获取列表特殊过滤条件
     const { filters2 } = this.resultBox.state;
 
-    console.log(searchText, filters, filters2);
+    const values = new Map();
+
+    if (searchText.value !== '') {
+      values.set(searchText.key, searchText.value);
+    }
+
+    filters.forEach(item => {
+      if (item.value !== '') {
+        values.set(item.key, item.value);
+      }
+    });
+
+    filters2.forEach(item => {
+      if (item.value !== '') {
+        values.set(item.key, item.value);
+      }
+    });
+
+    dispatch({
+      type: 'orgList/listLoad',
+      payload: strMapToObj(values),
+    });
   };
 
   handleModalVisible = flag => {
@@ -184,7 +220,11 @@ class OrgList extends PureComponent {
     } = this.props;
 
     return (
-      <PageHeaderWrapper>
+      <PageHeaderWrapper
+        style={{
+          paddingBottom: 10,
+        }}
+      >
         <div className={styles.tableHead}>
           <TablePageHeaderBox1
             ref={c => {
@@ -200,6 +240,7 @@ class OrgList extends PureComponent {
             }}
             filters={filters}
             maxFilterNum={5}
+            handleSearch={this.handleSearch}
           />
         </div>
         <div className={styles.tableContent}>
@@ -214,6 +255,7 @@ class OrgList extends PureComponent {
             data={listData}
             columns={this.columns}
             onSelectRow={this.handleSelectRows}
+            handleSearch={this.handleSearch}
           />
         </div>
       </PageHeaderWrapper>
