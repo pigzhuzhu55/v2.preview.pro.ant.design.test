@@ -1,6 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Form, Input, Menu, Icon, Button, Divider, Dropdown, Badge } from 'antd';
+import PropTypes from 'prop-types';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import GeneralTable from '@/components/My/GeneralTable';
 import TablePageHeaderBox1 from '@/components/My/TablePageHeaderBox1';
@@ -92,15 +93,7 @@ class OrgList extends PureComponent {
     });
   }
 
-  handleSelectRows = rows => {
-    this.setState({
-      selectedRows: rows,
-    });
-  };
-
-  handleSearch = () => {
-    const { dispatch } = this.props;
-
+  getSearchVaules(pagination) {
     // 获取模糊查询条件
     const { searchText } = this.searchBox.state;
 
@@ -111,6 +104,13 @@ class OrgList extends PureComponent {
     const { filters2 } = this.resultBox.state;
 
     const values = new Map();
+
+    // 如果有翻页
+    if (pagination) {
+      const { current, pageSize } = pagination;
+      values.set('current', current);
+      values.set('pageSize', pageSize);
+    }
 
     if (searchText.value !== '') {
       values.set(searchText.key, searchText.value);
@@ -127,6 +127,20 @@ class OrgList extends PureComponent {
         values.set(item.key, item.value);
       }
     });
+
+    return values;
+  }
+
+  handleSelectRows = rows => {
+    this.setState({
+      selectedRows: rows,
+    });
+  };
+
+  handleSearch = pagination => {
+    const { dispatch } = this.props;
+
+    const values = this.getSearchVaules(pagination);
 
     dispatch({
       type: 'orgList/listLoad',
@@ -152,6 +166,14 @@ class OrgList extends PureComponent {
       expandForm: !expandForm,
     });
   };
+
+  onChange = (pagination, filters, sorter, extra) => {
+    this.handleSearch(pagination);
+  };
+
+  /**
+   * 绑定省市县下拉数据
+   */
 
   queryProvinceData = () => {
     return getProvinceList();
@@ -254,8 +276,10 @@ class OrgList extends PureComponent {
             loading={loading}
             data={listData}
             columns={this.columns}
+            scroll={{ y: `calc(100vh - 438px)` }}
             onSelectRow={this.handleSelectRows}
             handleSearch={this.handleSearch}
+            onChange={this.onChange}
           />
         </div>
       </PageHeaderWrapper>
