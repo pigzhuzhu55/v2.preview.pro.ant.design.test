@@ -158,7 +158,7 @@ export default class MyDropList extends Component {
         } else {
           newValues.push(value);
         }
-      } else if (this.props.value === '') {
+      } else if (this.props.value === '' || this.props.value !== value) {
         newValues.push(value);
       } else {
         newValues.push('');
