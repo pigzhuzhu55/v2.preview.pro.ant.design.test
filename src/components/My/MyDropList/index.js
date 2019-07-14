@@ -158,8 +158,10 @@ export default class MyDropList extends Component {
         } else {
           newValues.push(value);
         }
-      } else {
+      } else if (this.props.value === '') {
         newValues.push(value);
+      } else {
+        newValues.push('');
       }
     } else {
       newValues.push(`${value.split(',')[0]} ~ ${value.split(',')[1]}`);
