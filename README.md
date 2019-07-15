@@ -4,4 +4,4 @@
 
 * 增加列表查询组件效果图
 
-[![Watch the video](http://resimg.iqeq.cn/webapires/cbf/fe.png)](http://resimg.iqeq.cn/webapires/cbf/fe.mp4)
+[![Watch the video](http://resimg.iqeq.cn/webapires/cbf/fe.gif)](http://resimg.iqeq.cn/webapires/cbf/fe.mp4)
