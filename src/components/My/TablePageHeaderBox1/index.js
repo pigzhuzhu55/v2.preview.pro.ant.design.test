@@ -73,7 +73,12 @@ export default class TablePageHeaderBox1 extends Component {
           {buttons.map(
             item =>
               item && (
-                <Button key={item.text} type={item.type} style={{ width: 100, marginRight: 10 }}>
+                <Button
+                  key={item.text}
+                  type={item.type}
+                  style={{ width: 100, marginRight: 10 }}
+                  onClick={item.onClick}
+                >
                   {item.text}
                 </Button>
               )

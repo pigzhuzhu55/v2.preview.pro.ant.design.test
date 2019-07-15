@@ -6,6 +6,7 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import GeneralTable from '@/components/My/GeneralTable';
 import TablePageHeaderBox1 from '@/components/My/TablePageHeaderBox1';
 import TablePageHeaderBox2 from '@/components/My/TablePageHeaderBox2';
+import MyModal from '@/components/My/MyModal';
 
 import { FormattedMessage } from 'umi-plugin-react/locale';
 
@@ -13,8 +14,6 @@ import { getProvinceList, getCityList, getCountyList } from '@/services/api';
 import { strMapToObj } from '@/utils/utils';
 
 import styles from './OrgList.less';
-
-const FormItem = Form.Item;
 
 const orgTypeMap = ['red', 'orange'];
 const orgType = ['直营', '加盟'];
@@ -26,13 +25,6 @@ const orgType = ['直营', '加盟'];
 }))
 @Form.create()
 class OrgList extends PureComponent {
-  state = {
-    orgListData: [],
-    selectedRows: [],
-    expandForm: false,
-    formValues: {},
-  };
-
   columns = [
     {
       title: '编号',
@@ -85,6 +77,28 @@ class OrgList extends PureComponent {
     },
   ];
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      orgListData: [],
+      selectedRows: [],
+      modal: {
+        title: '',
+        visible: false,
+        onClose: this.handleModalVisible,
+        onOk: this.handleSubmit,
+        formVals: [
+          { title: '机构名称', key: 'orgName', value: '' },
+          { title: '性质', key: 'orgType', value: '', type: 'Select' },
+          { title: '所属地', key: 'area', value: '', type: 'Cascader' },
+          { title: '电话号码', key: 'telephone', value: '' },
+          { title: '合同过期时间', key: 'expireTime', value: '', type: 'DatePicker' },
+        ],
+      },
+    };
+  }
+
   componentDidMount() {
     const { dispatch } = this.props;
 
@@ -93,6 +107,7 @@ class OrgList extends PureComponent {
     });
   }
 
+  // #region 获取查询参数
   getSearchVaules(pagination) {
     // 获取模糊查询条件
     const { searchText } = this.searchBox.state;
@@ -130,7 +145,9 @@ class OrgList extends PureComponent {
 
     return values;
   }
+  // #endregion
 
+  // #region 页面事件
   handleSelectRows = rows => {
     this.setState({
       selectedRows: rows,
@@ -148,33 +165,12 @@ class OrgList extends PureComponent {
     });
   };
 
-  handleModalVisible = flag => {
-    this.setState({
-      modalVisible: !!flag,
-    });
-  };
-
-  handleUpdateModalVisible = flag => {
-    this.setState({
-      updateModalVisible: !!flag,
-    });
-  };
-
-  toggleForm = () => {
-    const { expandForm } = this.state;
-    this.setState({
-      expandForm: !expandForm,
-    });
-  };
-
   onChange = (pagination, filters, sorter, extra) => {
     this.handleSearch(pagination);
   };
+  // #endregion
 
-  /**
-   * 绑定省市县下拉数据
-   */
-
+  // #region 绑定省市县下拉数据
   queryProvinceData = () => {
     return getProvinceList();
   };
@@ -186,11 +182,36 @@ class OrgList extends PureComponent {
   queryCountyData = cityId => {
     return getCountyList({ cityId });
   };
+  // #endregion
 
+  // #region 页头按钮绑定事件
+
+  // #endregion 窗口事件
+
+  handleModalVisible = flag => {
+    const { ...modal } = this.state.modal;
+
+    this.setState({
+      modal: {
+        ...modal,
+        title: '新增机构',
+        visible: !!flag,
+      },
+    });
+  };
+
+  handleSubmit = () => {
+    console.log('ffff');
+  };
+
+  // #region render
   render() {
-    const { expandForm, selectedRows } = this.state;
+    const { selectedRows, modal } = this.state;
 
-    const buttons = [{ text: '新增', type: 'primary' }, { text: '移除' }];
+    const buttons = [
+      { text: '新增机构', type: 'primary', onClick: () => this.handleModalVisible(true) },
+      { text: '导入机构' },
+    ];
     const searchTexts = [
       { text: '机构名称', key: 'orgName', placeholder: '请输入机构名称' },
       { text: '电话号码', key: 'telephone', placeholder: '请输入电话号码' },
@@ -282,9 +303,11 @@ class OrgList extends PureComponent {
             onChange={this.onChange}
           />
         </div>
+        <MyModal {...modal} />
       </PageHeaderWrapper>
     );
   }
+  // #endregion
 }
 
 export default OrgList;
