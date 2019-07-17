@@ -133,7 +133,7 @@ export default class TablePageHeaderBox2 extends Component {
               className={classNames(styles.filterlabel, 'floatR')}
               onClick={() => this.handleToggleFilter()}
             >
-              {showMore ? '收齐更多' : '更多筛选'} <Icon type={showMore ? 'up' : 'down'} />
+              {showMore ? '收起更多' : '更多筛选'} <Icon type={showMore ? 'up' : 'down'} />
             </a>
           )}
           <div className={styles.droplistbox}>
