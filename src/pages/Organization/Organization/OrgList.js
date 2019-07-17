@@ -78,6 +78,8 @@ class OrgList extends PureComponent {
     {
       title: '操作',
       key: 'operation',
+      fixed: 'right',
+      width: 100,
       render: (text, record) => (
         <Fragment>
           <a onClick={() => this.handleModalVisible(true, record.key, '修改机构')}>修改</a>
