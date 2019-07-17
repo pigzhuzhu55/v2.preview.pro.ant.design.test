@@ -94,6 +94,10 @@ export async function getOrganizationList(params) {
   return request(`/api/v1/organization/list?${stringify(params)}`);
 }
 
+export async function getOrganizationInfo(params) {
+  return request(`/api/v1/organization/info?${stringify(params)}`);
+}
+
 export async function removeOrganization(params) {
   return request('/api/v1/organization/remove', {
     method: 'POST',
@@ -112,4 +116,11 @@ export async function getCityList(params) {
 }
 export async function getCountyList(params) {
   return request(`/api/none/common/county/list?${stringify(params)}`);
+}
+
+/**
+ * 科目管理
+ */
+export async function getSubjectSimList(params) {
+  return request(`/api/v1/subject/listsim?${stringify(params)}`);
 }

@@ -212,7 +212,7 @@ export default class MyDropList extends Component {
             >
               <div className={styles.poper}>
                 {loading ? (
-                  <div className={styles.loading}>
+                  <div className="loading">
                     <Spin />
                   </div>
                 ) : (

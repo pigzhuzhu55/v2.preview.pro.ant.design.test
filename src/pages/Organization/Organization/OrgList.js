@@ -10,7 +10,13 @@ import MyModal from '@/components/My/MyModal';
 
 import { FormattedMessage } from 'umi-plugin-react/locale';
 
-import { getProvinceList, getCityList, getCountyList } from '@/services/api';
+import {
+  getProvinceList,
+  getCityList,
+  getCountyList,
+  getOrganizationInfo,
+  getSubjectSimList,
+} from '@/services/api';
 import { strMapToObj } from '@/utils/utils';
 
 import styles from './OrgList.less';
@@ -67,9 +73,9 @@ class OrgList extends PureComponent {
     },
     {
       title: '操作',
-      render: text => (
+      render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true)}>修改</a>
+          <a onClick={() => this.handleModalVisible(true, record.key, '修改机构')}>修改</a>
           <Divider type="vertical" />
           <a href="">合同</a>
         </Fragment>
@@ -83,17 +89,54 @@ class OrgList extends PureComponent {
     this.state = {
       orgListData: [],
       selectedRows: [],
+      // modal 为普通简单通用的数据绑定模版，如果高级页面，不建议这么做
       modal: {
         title: '',
         visible: false,
         onClose: this.handleModalVisible,
         onOk: this.handleSubmit,
+        init: id => this.queryPageInfo(id),
         formVals: [
-          { title: '机构名称', key: 'orgName', value: '' },
-          { title: '性质', key: 'orgType', value: '', type: 'Select' },
-          { title: '所属地', key: 'area', value: '', type: 'Cascader' },
-          { title: '电话号码', key: 'telephone', value: '' },
-          { title: '合同过期时间', key: 'expireTime', value: '', type: 'DatePicker' },
+          {
+            title: '机构名称',
+            key: 'orgName',
+            placeholder: '请输入机构名称',
+            rules: [{ required: true, message: ' ' }],
+          },
+          {
+            title: '性质',
+            key: 'orgType',
+            type: 'Select',
+            placeholder: '请选择机构性质',
+            options: [{ title: '直营', key: '0' }, { title: '加盟', key: '1' }],
+            rules: [{ required: true, message: ' ' }],
+          },
+          {
+            title: '科目领域',
+            key: 'subjects',
+            type: 'Select',
+            mode: 'multiple',
+            placeholder: '请选择科目领域',
+            init: () => this.querySubjectData(),
+            rules: [{ required: true, message: ' ' }],
+          },
+          {
+            title: '所属地',
+            key: 'area',
+            type: 'Cascader',
+            placeholder: '请选择所属地',
+            rules: [{ required: true, message: ' ' }],
+            loadData: ops => this.queryAreaData(ops),
+            init: () => this.queryProvinceData(),
+            maxLevel: 3,
+          },
+          { title: '电话号码', key: 'telephone', placeholder: '请输入电话号码' },
+          {
+            title: '合同过期时间',
+            key: 'expireTime',
+            type: 'DatePicker',
+            rules: [{ required: true, message: ' ' }],
+          },
         ],
       },
     };
@@ -170,7 +213,7 @@ class OrgList extends PureComponent {
   };
   // #endregion
 
-  // #region 绑定省市县下拉数据
+  // #region 绑定一些下拉数据
   queryProvinceData = () => {
     return getProvinceList();
   };
@@ -182,27 +225,46 @@ class OrgList extends PureComponent {
   queryCountyData = cityId => {
     return getCountyList({ cityId });
   };
+
+  /**
+   * 根据下拉层次，返回要拉取的是市级、县级方法
+   */
+  queryAreaData = level => {
+    if (level === 1) {
+      return this.queryCityData;
+    }
+    return this.queryCountyData;
+  };
+
+  querySubjectData = () => {
+    return getSubjectSimList();
+  };
   // #endregion
 
-  // #region 页头按钮绑定事件
+  // #region 窗口
 
-  // #endregion 窗口事件
+  queryPageInfo = id => {
+    return getOrganizationInfo({ id });
+  };
 
-  handleModalVisible = flag => {
+  handleModalVisible = (flag, id = 0, title = '新增机构') => {
     const { ...modal } = this.state.modal;
 
     this.setState({
       modal: {
         ...modal,
-        title: '新增机构',
+        id,
+        title,
         visible: !!flag,
       },
     });
   };
 
-  handleSubmit = () => {
-    console.log('ffff');
+  handleSubmit = values => {
+    console.log(values);
   };
+
+  // #endregion
 
   // #region render
   render() {
