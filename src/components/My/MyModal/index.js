@@ -124,7 +124,7 @@ class MyModal extends PureComponent {
                 formSyncVals.push(f);
               }
             } else {
-              allPromise.push(f.loadData(i)(value[i - 1]));
+              allPromise.push(f.loadData(i - 1)(value[i - 1]));
               formSyncExtends.push({ level: i, value });
               formSyncVals.push(f);
             }
@@ -154,7 +154,7 @@ class MyModal extends PureComponent {
               const item = {
                 value: d.key.toString(),
                 label: d.title,
-                isLeaf: level === formSyncVals[index].maxLevel - 1,
+                isLeaf: level === formSyncVals[index].maxLevel - 2,
                 level,
               };
               dd.push(item);
@@ -228,7 +228,7 @@ class MyModal extends PureComponent {
           const item = {
             value: d.key.toString(),
             label: d.title,
-            isLeaf: targetOption.level === maxLevel - 1,
+            isLeaf: targetOption.level === maxLevel - 2,
             level: targetOption.level + 1,
           };
           dd.push(item);

@@ -230,7 +230,7 @@ class OrgList extends PureComponent {
    * 根据下拉层次，返回要拉取的是市级、县级方法
    */
   queryAreaData = level => {
-    if (level === 1) {
+    if (level === 0) {
       return this.queryCityData;
     }
     return this.queryCountyData;
