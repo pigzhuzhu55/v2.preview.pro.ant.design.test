@@ -48,16 +48,12 @@ class OrgList extends PureComponent {
       },
     },
     {
-      title: '省',
-      dataIndex: 'privince',
+      title: '科目领域',
+      dataIndex: 'subjects',
     },
     {
-      title: '市',
-      dataIndex: 'city',
-    },
-    {
-      title: '县',
-      dataIndex: 'county',
+      title: '省市县',
+      dataIndex: 'area',
     },
     {
       title: '电话号码',

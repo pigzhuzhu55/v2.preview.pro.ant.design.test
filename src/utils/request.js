@@ -82,14 +82,6 @@ const errorHandler = error => {
   });
 };
 
-// const errorHandlerEnd = () => {
-//   global.constants.msgLock=
-// }
-// const errorHandler = error => {
-//   errorHandlerBegin(error);
-//   errorHandlerEnd();
-// }
-
 /**
  * 配置request请求时的默认参数
  */
