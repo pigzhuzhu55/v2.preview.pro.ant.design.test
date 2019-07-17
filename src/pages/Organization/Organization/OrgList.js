@@ -35,40 +35,49 @@ class OrgList extends PureComponent {
     {
       title: '编号',
       dataIndex: 'key',
+      width: 50,
     },
     {
       title: '机构名称',
       dataIndex: 'orgName',
+      width: 400,
     },
     {
       title: '性质',
       dataIndex: 'orgType',
+      width: 100,
       render(val) {
         return <Badge color={orgTypeMap[val]} text={orgType[val]} />;
       },
     },
     {
       title: '科目领域',
-      dataIndex: 'subjects',
+      dataIndex: 'subject',
+      width: 200,
     },
     {
       title: '省市县',
       dataIndex: 'area',
+      width: 200,
     },
     {
       title: '电话号码',
       dataIndex: 'telephone',
+      width: 150,
     },
     {
       title: '合同过期时间',
       dataIndex: 'expireTime',
+      width: 100,
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
+      width: 200,
     },
     {
       title: '操作',
+      key: 'operation',
       render: (text, record) => (
         <Fragment>
           <a onClick={() => this.handleModalVisible(true, record.key, '修改机构')}>修改</a>
@@ -362,7 +371,7 @@ class OrgList extends PureComponent {
             loading={loading}
             data={listData}
             columns={this.columns}
-            scroll={{ y: `calc(100vh - 438px)` }}
+            scroll={{ x: 1500, y: `calc(100vh - 438px)` }}
             onSelectRow={this.handleSelectRows}
             handleSearch={this.handleSearch}
             onChange={this.onChange}
