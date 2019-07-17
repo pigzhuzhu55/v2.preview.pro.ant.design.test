@@ -292,6 +292,13 @@ class OrgList extends PureComponent {
         type: 'DatePicker',
       },
       {
+        text: '科目领域',
+        key: 'subjects',
+        value: '',
+        multiple: true,
+        loadData: this.querySubjectData,
+      },
+      {
         text: '省',
         key: 'province',
         value: '',

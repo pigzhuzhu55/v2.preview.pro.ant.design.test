@@ -56,32 +56,29 @@ export default class MyDropList extends Component {
   }
 
   componentDidMount() {
-    const { options, value, type, loadData, child, parent } = this.props;
-
-    if (type === 'Select') {
-      // 说明是第一个下拉，直接加载数据
-      if (parent === '' && !!loadData) {
-        this.setState({
-          loading: true,
-        });
-        loadData().then(response => {
-          if (response.code === 0) {
-            this.setState({
-              loading: false,
-              options: response.data,
-            });
-
-            // 这里主要是为了更新MySelectBox里面的选项,所以需要传出去
-            const nextProps = {
-              ...this.props,
-              options: response.data,
-            };
-
-            this.props.onLoad(nextProps);
-          }
-        });
-      }
-    }
+    // const { options, value, type, loadData, child, parent } = this.props;
+    // if (type === 'Select') {
+    //   // 说明是第一个下拉，直接加载数据
+    //   if (parent === '' && !!loadData) {
+    //     this.setState({
+    //       loading: true,
+    //     });
+    //     loadData().then(response => {
+    //       if (response.code === 0) {
+    //         this.setState({
+    //           loading: false,
+    //           options: response.data,
+    //         });
+    //         // 这里主要是为了更新MySelectBox里面的选项,所以需要传出去
+    //         const nextProps = {
+    //           ...this.props,
+    //           options: response.data,
+    //         };
+    //         this.props.onLoad(nextProps);
+    //       }
+    //     });
+    //   }
+    // }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -119,6 +116,28 @@ export default class MyDropList extends Component {
           loading: true,
         });
         loadData(parentValue).then(response => {
+          if (response.code === 0) {
+            this.setState({
+              loading: false,
+              options: response.data,
+            });
+
+            // 这里主要是为了更新MySelectBox里面的选项,所以需要传出去
+            const nextProps = {
+              ...this.props,
+              options: response.data,
+            };
+
+            this.props.onLoad(nextProps);
+          }
+        });
+      }
+      // 普通节点且未加载值 // 说明是第一个下拉，直接加载数据
+      else if (parent === '' && !!loadData && options.length === 0) {
+        this.setState({
+          loading: true,
+        });
+        loadData().then(response => {
           if (response.code === 0) {
             this.setState({
               loading: false,
@@ -191,6 +210,9 @@ export default class MyDropList extends Component {
               {this.props.showItemSeparator && this.props.parent === '' && (
                 <span style={{ marginRight: 10, color: '#d4dfe5' }}>|</span>
               )}
+              {this.props.showItemSeparator && this.props.parent !== '' && (
+                <Icon style={{ marginRight: 10 }} type="link" />
+              )}
               <span
                 className={
                   parent !== '' && (parentValue === '' || parentValue.includes('|'))
@@ -201,7 +223,6 @@ export default class MyDropList extends Component {
               >
                 {text}
                 <Icon type={showFilterDrop ? 'up' : 'down'} />
-                {this.props.child !== '' && <Icon type="link" />}
               </span>
             </div>
             <div
