@@ -68,7 +68,7 @@ class OrgList extends PureComponent {
     {
       title: '合同过期时间',
       dataIndex: 'expireTime',
-      width: 100,
+      width: 150,
     },
     {
       title: '创建时间',
