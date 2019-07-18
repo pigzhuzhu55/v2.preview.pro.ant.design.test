@@ -1,6 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Form, Input, Menu, Icon, Button, Divider, Dropdown, Badge } from 'antd';
+import { Row, Col, Form, Input, Menu, Icon, Button, Divider, Dropdown, Badge, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import GeneralTable from '@/components/My/GeneralTable';
@@ -84,7 +84,7 @@ class OrgList extends PureComponent {
         <Fragment>
           <a onClick={() => this.handleModalVisible(true, record.key, '修改机构')}>修改</a>
           <Divider type="vertical" />
-          <a href="">合同</a>
+          <a onClick={() => this.handleTODO()}>合同</a>
         </Fragment>
       ),
     },
@@ -285,13 +285,21 @@ class OrgList extends PureComponent {
 
   // #endregion
 
+  // TODO
+  handleTODO = () => {
+    Modal.warning({
+      title: '功能暂未实现',
+      content: '期待...',
+    });
+  };
+
   // #region render
   render() {
     const { selectedRows, modal } = this.state;
 
     const buttons = [
       { text: '新增机构', type: 'primary', onClick: () => this.handleModalVisible(true) },
-      { text: '导入机构' },
+      { text: '导入机构', onClick: () => this.handleTODO() },
     ];
     const searchTexts = [
       { text: '机构名称', key: 'orgName', placeholder: '请输入机构名称' },

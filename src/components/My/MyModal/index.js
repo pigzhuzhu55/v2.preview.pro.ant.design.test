@@ -232,6 +232,8 @@ class MyModal extends PureComponent {
     });
     if (msg) {
       message.error(msg);
+    } else {
+      message.success('保存成功');
     }
   };
 
