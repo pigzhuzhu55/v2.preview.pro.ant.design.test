@@ -200,3 +200,19 @@ export function strMapToObj(strMap) {
   });
   return obj;
 }
+
+export function formatObjToPost(obj) {
+  const r = {};
+
+  Object.keys(obj).forEach(key => {
+    if (Array.isArray(obj[key])) {
+      r[key] = obj[key].join('|');
+    } else if (moment.isMoment(obj[key])) {
+      r[key] = moment(obj[key]).format('YYYY-MM-DD');
+    } else {
+      r[key] = obj[key];
+    }
+  });
+
+  return r;
+}

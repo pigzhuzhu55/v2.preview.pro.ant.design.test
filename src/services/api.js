@@ -98,6 +98,13 @@ export async function getOrganizationInfo(params) {
   return request(`/api/v1/organization/info?${stringify(params)}`);
 }
 
+export async function saveOrganization(params) {
+  return request('/api/v1/organization/save', {
+    method: 'POST',
+    data: params,
+  });
+}
+
 export async function removeOrganization(params) {
   return request('/api/v1/organization/remove', {
     method: 'POST',

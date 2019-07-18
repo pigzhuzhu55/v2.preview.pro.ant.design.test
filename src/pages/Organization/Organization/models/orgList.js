@@ -1,6 +1,7 @@
 import {
   getOrganizationList,
   removeOrganization,
+  saveOrganization,
   getProvinceList,
   getCityList,
   getCountyList,
@@ -28,6 +29,10 @@ export default {
     *remove({ payload, callback }, { call }) {
       yield call(removeOrganization, payload);
       if (callback) callback();
+    },
+    *save({ payload, callback }, { call }) {
+      const response = yield call(saveOrganization, payload);
+      if (callback) callback(response);
     },
     *listProvince({ payload, callback }, { call }) {
       const response = yield call(getProvinceList, payload);

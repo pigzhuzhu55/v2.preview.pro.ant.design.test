@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Input, Icon, DatePicker, Spin, Modal, Form, Select, Cascader } from 'antd';
+import { Input, Icon, DatePicker, Spin, Modal, Form, Select, Cascader, message } from 'antd';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
@@ -51,16 +51,19 @@ class MyModal extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const { title, visible, formVals, id, init } = nextProps;
+    const { id: oldId } = this.state;
 
     this.setState({
-      loading: true,
       visible,
       title,
     });
 
-    if (visible && id > 0) {
+    if (visible && (id !== oldId || oldId === undefined) && id > 0) {
       // 说明是编辑操作，要加载远程数据
       // 先加载编辑的数据
+      this.setState({
+        loading: true,
+      });
       init(id).then(response => {
         // 先赋值
         formVals.forEach(f => {
@@ -68,9 +71,9 @@ class MyModal extends PureComponent {
           f.value = value;
         });
 
-        this.initPageData(formVals);
+        this.initPageData(formVals, id);
       });
-    } else {
+    } else if (id === 0) {
       formVals.forEach(item => {
         if (item.type === 'DatePicker') {
           item.initialValue = null;
@@ -85,12 +88,12 @@ class MyModal extends PureComponent {
       });
 
       if (visible) {
-        this.initPageData(formVals);
+        this.initPageData(formVals, id);
       }
     }
   }
 
-  initPageData = formVals => {
+  initPageData = (formVals, id) => {
     // 这里只有级联的才需要再次异步去取下拉值，优化下一次性去取
     const allPromise = [];
     // 表单的配置信息 formVals的每一项
@@ -154,7 +157,7 @@ class MyModal extends PureComponent {
               const item = {
                 value: d.key.toString(),
                 label: d.title,
-                isLeaf: level === formSyncVals[index].maxLevel - 2,
+                isLeaf: level === formSyncVals[index].maxLevel - 1,
                 level,
               };
               dd.push(item);
@@ -196,23 +199,40 @@ class MyModal extends PureComponent {
         this.setState({
           loading: false,
           formVals,
+          id,
         });
       });
     } else {
       this.setState({
         loading: false,
         formVals,
+        id,
       });
     }
+  };
+
+  handleClose = () => {
+    const { id, title } = this.state;
+    this.props.onClose(id, title);
   };
 
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
+      const { id, title } = this.state;
       if (!err) {
-        this.props.onOk(values);
+        this.props.onOk({ ...values, id }, id, title, msg => this.alertError(msg));
       }
     });
+  };
+
+  alertError = msg => {
+    this.setState({
+      loading: false,
+    });
+    if (msg) {
+      message.error(msg);
+    }
   };
 
   loadCascaderData = (selectedOptions, loadData, maxLevel) => {
@@ -254,7 +274,7 @@ class MyModal extends PureComponent {
         destroyOnClose
         title={title}
         visible={visible}
-        onCancel={() => this.props.onClose(false)}
+        onCancel={this.handleClose}
         onOk={this.handleSubmit}
       >
         {loading ? (

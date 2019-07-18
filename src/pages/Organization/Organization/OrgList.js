@@ -17,7 +17,7 @@ import {
   getOrganizationInfo,
   getSubjectSimList,
 } from '@/services/api';
-import { strMapToObj } from '@/utils/utils';
+import { strMapToObj, formatObjToPost } from '@/utils/utils';
 
 import styles from './OrgList.less';
 
@@ -52,7 +52,7 @@ class OrgList extends PureComponent {
     },
     {
       title: '科目领域',
-      dataIndex: 'subject',
+      dataIndex: 'subjects',
       width: 200,
     },
     {
@@ -100,8 +100,8 @@ class OrgList extends PureComponent {
       modal: {
         title: '',
         visible: false,
-        onClose: this.handleModalVisible,
-        onOk: this.handleSubmit,
+        onClose: (id, title) => this.handleModalVisible(false, id, title),
+        onOk: (values, id, title, callback) => this.handleSubmit(values, id, title, callback),
         init: id => this.queryPageInfo(id),
         formVals: [
           {
@@ -267,8 +267,20 @@ class OrgList extends PureComponent {
     });
   };
 
-  handleSubmit = values => {
-    console.log(values);
+  handleSubmit = (values, id, title, callback) => {
+    const v = formatObjToPost(values);
+
+    this.props.dispatch({
+      type: 'orgList/save',
+      payload: v,
+      callback: response => {
+        if (response.code === 0) {
+          this.handleModalVisible(false, id, title);
+          this.handleSearch();
+        }
+        callback(response.message);
+      },
+    });
   };
 
   // #endregion
