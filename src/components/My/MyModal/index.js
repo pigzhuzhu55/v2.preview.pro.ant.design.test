@@ -228,6 +228,7 @@ class MyModal extends PureComponent {
 
   alertError = msg => {
     this.setState({
+      id: 0,
       loading: false,
     });
     if (msg) {
