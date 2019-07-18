@@ -228,12 +228,14 @@ class MyModal extends PureComponent {
 
   alertError = msg => {
     this.setState({
-      id: 0,
       loading: false,
     });
     if (msg) {
       message.error(msg);
     } else {
+      this.setState({
+        id: 0,
+      });
       message.success('保存成功');
     }
   };
